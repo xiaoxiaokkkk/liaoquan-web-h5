@@ -842,11 +842,11 @@ const handleNavbarBack = () => {
 
   if (detail.value.merchantId) {
     if (shareUserId.value) {
-      const path = '/first?merchantId=' + detail.value.merchantId + '&userId=' + shareUserId.value
+      const path = '/lqindex?merchantId=' + detail.value.merchantId + '&userId=' + shareUserId.value
       router.push(path)
       return
     } else {
-      const path = '/first?merchantId=' + detail.value.merchantId
+      const path = '/lqindex?merchantId=' + detail.value.merchantId
       router.push(path)
       return
     }

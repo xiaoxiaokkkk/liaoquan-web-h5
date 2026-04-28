@@ -46,9 +46,9 @@ const tabbars = [
     active: homeActive,
     unactive: homeUnactive,
     to: {
-      name: 'First'
+      name: 'LqIndex'
     },
-    name: 'First'
+    name: 'LqIndex'
   },
   {
     title: '消息',

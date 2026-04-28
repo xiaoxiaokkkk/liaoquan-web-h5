@@ -63,7 +63,7 @@ router.beforeEach((to, from, next) => {
     const redirectPath =
       rawRedirect && rawRedirect.startsWith('/') && rawRedirect !== '/login'
         ? rawRedirect
-        : '/first'
+        : '/lqindex'
 
     next({ path: redirectPath, replace: true })
     return
@@ -87,8 +87,8 @@ router.beforeEach((to, from, next) => {
     return
   }
 
-  // 首页参数持久化/兜底：tabbar 切换可能导致 /home 或 /first 不带 query（merchantId 等）
-  if (to.name === 'First') {
+  // 首页参数持久化/兜底：tabbar 切换可能导致 /home 或 /lqindex 不带 query（merchantId 等）
+  if (to.name === 'LqIndex') {
     const hasQuery = to.query && Object.keys(to.query).length > 0
     if (hasQuery) {
       // 进入 home 有参数：保存下来

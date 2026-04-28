@@ -7,7 +7,7 @@ export const constantRouterMap = [
     path: '/',
     name: 'Layout',
     component: () => import('@/views/layouts/index'),
-    redirect: '/first',
+    redirect: '/lqindex',
     // 关键：缓存 Layout，避免从 /home 跳到 /contentDetail 时 Layout 被卸载，
     // 从而导致其内部 keep-alive 缓存（Home/ContentList）丢失、滚动回到顶部
     meta: { keepAlive: true },
@@ -19,8 +19,8 @@ export const constantRouterMap = [
       //   meta: { title: '首页', keepAlive: true, scrollTop: 0 }
       // },
       {
-        path: '/first',
-        name: 'First',
+        path: '/lqindex',
+        name: 'LqIndex',
         component: () => import('@/views/index/index'),
         meta: { title: '首页', keepAlive: true, scrollTop: 0 }
       },
