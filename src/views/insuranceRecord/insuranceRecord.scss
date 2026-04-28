@@ -1,0 +1,262 @@
+@import "@/assets/css/common.scss";
+
+.insurance-record-page {
+  height: calc(var(--vh) * 100);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  // background: #141414;
+  // background-image: url('@/assets/images/login/bg.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+
+  // 覆盖 Navbar 右侧图标颜色
+  :deep(.image-icon) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .insurance-record-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0 15px;
+    padding-bottom: 20px;
+
+    .policy-scroll {
+      flex: 1;
+      overflow: hidden;
+      overflow-y: auto;
+
+      :deep(.nut-pull-refresh) {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      :deep(.nut-pull-refresh__head) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+      }
+
+      :deep(.nut-pull-refresh__body) {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        min-height: 0;
+      }
+    }
+
+    .policy-list-container {
+      height: 100%;
+    }
+
+    .policy-skeleton {
+      padding: 16px;
+      margin-bottom: 12px;
+      --nut-skeleton-content-line-background-color: #141414;
+      --nut-skeleton-content-avatar-background-color: #141414;
+    }
+
+    .policy-empty {
+      padding: 40px 16px;
+      text-align: center;
+    }
+
+    .policy-item {
+      position: relative;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      
+      .policy-item-content {
+        .policy-header {
+          margin-bottom: 10px;
+          
+          .policy-name-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2px;
+            
+            .policy-name {
+              font-weight: 500;
+              font-size: 16px;
+              color: #fff;
+              line-height: 23px;
+            }
+
+            .policy-status {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              
+              .status-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                flex-shrink: 0;
+                display: block;
+                
+                &.dot-active {
+                  background: #26BE83;
+                }
+                
+                &.dot-cancelled {
+                  background: #E11717;
+                }
+                &.dot-returned {
+                  background: #999;
+                }
+                &.dot-payout {
+                  background: #E58620;
+                }
+                &.dot-payout-completed {
+                  background: #26BE83;
+                }
+              }
+              
+              .status-text {
+                font-size: 12px;
+                white-space: nowrap;
+                line-height: 12px;
+              }
+              
+              &.status-active .status-text {
+                color: #26BE83;
+              }
+              
+              &.status-cancelled .status-text {
+                color: #E11717;
+              }
+              &.status-returned .status-text {
+                color: #999;
+              }
+              
+              &.status-payout .status-text {
+                color: #E58620;
+              }
+              &.status-payout-completed .status-text {
+                color: #26BE83;
+              }
+            }
+          }
+          
+          .policy-strategy {
+            font-weight: 350;
+            font-size: 12px;
+            color: #999999;
+            line-height: 17px;
+          }
+        }
+        
+        .policy-info {
+          display: flex;
+          justify-content: space-between;
+          gap: 6px;
+          margin-bottom: 3px;
+          
+          .info-item {
+            flex: 1;
+            min-width: 0;
+            
+            .info-label {
+              font-weight: 350;
+              font-size: 12px;
+              color: #999999;
+              line-height: 17px;
+            }
+            
+            .info-value {
+              word-break: break-all;
+              font-weight: 700;
+              font-size: 16px;
+              color: #fff;
+              line-height: 23px;
+              
+              &.payout {
+                color: #26BE83;
+              }
+            }
+          }
+          
+          .info-center {
+            text-align: center;
+            .info-label {
+              width: 120px;
+            }
+          }
+          
+          .info-right {
+            text-align: right;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            
+            .icon-toggle {
+              cursor: pointer;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 24px;
+              height: 24px;
+              border: 1px solid #999;
+              border-radius: 50%;
+              transition: all 0.3s ease;
+              
+              :deep(svg) {
+                width: 16px;
+                height: 16px;
+                color: #999;
+                transition: transform 0.3s ease;
+              }
+              
+              &:active {
+                transform: scale(0.9);
+                background: rgba(255, 255, 255, 0.1);
+              }
+            }
+          }
+        }
+
+        .policy-item-footer {
+          // margin-top: 10px;
+          display: flex;
+          justify-content: space-around;
+          gap: 10px;
+          .policy-button {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            height: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            
+            &:active {
+              opacity: 0.8;
+            }
+          }
+        }
+      }
+    }
+
+    .policy-infinite-loading {
+      padding: 16px 0;
+      text-align: center;
+      
+      .policy-finished {
+        font-size: 12px;
+        color: #999;
+        padding: 8px 0;
+      }
+    }
+  }
+}

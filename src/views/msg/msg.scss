@@ -1,0 +1,10 @@
+.msg-page {
+  height: calc(var(--vh) * 100 - 50px);
+  height: calc((var(--vh) * 100 - constant(safe-area-inset-bottom)) - 50px);
+  height: calc((var(--vh) * 100 - env(safe-area-inset-bottom)) - 50px);
+  // padding-bottom: 50px;
+  background: #f4f6f8;
+  .msg-content {
+    padding: 24px 12px;
+  }
+}

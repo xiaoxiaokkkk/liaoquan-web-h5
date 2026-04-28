@@ -1,0 +1,59 @@
+// 不再使用外部字体，改用系统字体栈
+
+.app-container {
+  // background: #141414;
+  // background-image: url('@/assets/images/login/bg.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  .layout-content {
+    min-height: calc(var(--vh) * 100 - 50px);
+    min-height: calc((var(--vh) * 100 - constant(safe-area-inset-bottom)) - 50px);
+    min-height: calc((var(--vh) * 100 - env(safe-area-inset-bottom)) - 50px);
+    background: #f4f6f8;
+  }
+}
+
+input, textarea {
+  // caret-color: #fff;
+}
+
+input {
+  // color: #fff;
+}
+
+.padding-left-right-15 {
+  padding: 0 15px;
+}
+
+.padding-left-right-30 {
+  padding: 0 30px;
+}
+
+.padding-left-5 {
+  padding-left: 5px;
+}
+.mt-4 {
+  margin-top: 4px;
+}
+.mt-5 {
+  margin-top: 5px;
+}
+.mt-10 {
+  margin-top: 10px;
+}
+.mt-15 {
+  margin-top: 15px;
+}
+.mt-20 {
+  margin-top: 20px;
+}
+.mt-25 {
+  margin-top: 25px;
+}
+.mt-50 {
+  margin-top: 50px;
+}
+
+.mb-15 {
+  margin-bottom: 15px;
+}

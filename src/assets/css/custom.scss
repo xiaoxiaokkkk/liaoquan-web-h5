@@ -1,0 +1,95 @@
+.custom-dialog {
+  border-radius: 14px !important;
+  .nut-dialog__header {
+    font-weight: 500 !important;
+  }
+  .nut-dialog__footer-cancel{
+    border: 1px solid #999 !important;
+    color: #999 !important;
+  }
+  .nut-dialog__footer .nut-dialog__footer-ok {
+    background: linear-gradient(135deg, #F9505B 0%, #F9505B 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 500 !important;
+  }
+  
+  .nut-dialog__footer .nut-button:active {
+    opacity: 0.8;
+  }
+}
+
+
+// .custom-popup {
+//   // background: #141414 !important;
+//   // color: #fff !important;
+//   // --nut-popup-border-radius: 20px !important;
+//   overflow: hidden !important;
+//   .nut-picker {
+//     overflow: hidden;
+
+//     .nut-picker__bar {
+//       background-color: #313131;
+//       overflow: hidden;
+//     }
+
+
+//     border-bottom-left-radius: 0px !important;
+//     border-bottom-right-radius: 0px !important;
+
+//     background: #141414;
+
+//     --nut-picker-cancel-color: #fff !important;
+//     --nut-picker-bar-title-color: #fff !important;
+//     --nut-picker-item-text-color: #999 !important;
+//     --nut-picker-item-active-line-border:1px solid #915858 !important;
+    
+//     // .nut-picker__column::before {
+//     //   width: 80%;  
+//     // }
+
+//     .nut-picker-roller-mask {
+//       background-image: none !important;
+//     }
+//     .nut-picker-roller-item-selected {
+//       color: #42E2CE !important;
+//     }
+//   }
+// }
+
+// .tip-popup {
+//   background-color: #191C1C;
+  
+//   .popup-content {
+//     padding: 28px 25px;
+    
+//     .popup-title {
+//       font-weight: 500;
+//       font-size: 16px;
+//       color: #FFFFFF;
+//       line-height: 23px;
+//       margin-bottom: 21px;
+//     }
+    
+//     .popup-content-item {
+//       font-weight: 350;
+//       font-size: 14px;
+//       color: #999;
+//       line-height: 22px;
+      
+//       p {
+//         margin: 0;
+//         padding: 0;
+        
+//         strong {
+//           color: #fff;
+//           font-weight: 500;
+//         }
+//       }
+//     }
+    
+//     .popup-footer {
+//       margin-top: 30px;
+//     }
+//   }
+// }

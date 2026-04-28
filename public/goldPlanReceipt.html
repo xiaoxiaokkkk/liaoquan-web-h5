@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <script type="text/javascript" charset="UTF-8" src="https://wx.gtimg.com/pay_h5/goldplan/js/jgoldplan-1.0.0.js"></script>
+  <title>支付小票</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #f5f6fa;
+      color: #1f2329;
+    }
+    .wrap {
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .card {
+      max-width: 640px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+    .title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .amount {
+      text-align: center;
+      margin-top: 20px;
+      color: #111;
+    }
+    .amount .currency { font-size: 20px; margin-right: 4px; }
+    .amount .number { font-size: 36px; font-weight: 700; }
+    .row {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .label { color: #666; font-size: 14px; }
+    .value { color: #111; font-size: 14px; text-align: right; word-break: break-all; }
+    .value.order { color: #2b59ff; }
+    .placeholder { margin-top: 24px; text-align: center; color: #666; font-size: 14px; }
+    .placeholder.error { color: #d03a2f; }
+    .jump-btn {
+      width: 100%;
+      margin-top: 24px;
+      height: 44px;
+      border: none;
+      border-radius: 8px;
+      background: #ff4d5b;
+      color: #fff;
+      font-size: 16px;
+    }
+    .copy-btn {
+      margin-left: 8px;
+      border: none;
+      background: transparent;
+      color: #ff4d5b;
+      font-size: 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div id="title" class="title">订单确认中</div>
+
+      <div id="readyBlock" style="display:none;">
+        <div class="amount">
+          <span class="currency">¥</span>
+          <span id="amount" class="number">0.00</span>
+        </div>
+        <div class="row">
+          <span class="label">订单编号</span>
+          <span class="value order">
+            <span id="orderNo">--</span>
+            <!-- <button id="copyBtn" class="copy-btn" type="button">复制</button> -->
+          </span>
+        </div>
+        <!-- <div class="row">
+          <span class="label">支付时间</span>
+          <span id="payTime" class="value">--</span>
+        </div> -->
+        <div class="row" id="titleRow" style="display:none;">
+          <span class="label">订单内容</span>
+          <span id="orderTitle" class="value"></span>
+        </div>
+        <button id="jumpBtn" class="jump-btn" type="button">购买成功，返回商家页面</button>
+      </div>
+
+      <div id="loadingBlock" class="placeholder">订单处理中，请稍候...</div>
+      <div id="errorBlock" class="placeholder error" style="display:none;">订单信息获取失败</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      function getParentOrigin() {
+        // In iframe integrations, `document.referrer` is typically the parent URL.
+        // If it's unavailable/unparseable, fall back to `*` to avoid DOMException on mismatched origins.
+        try {
+          if (document.referrer) return new URL(document.referrer).origin;
+        } catch (e) {}
+        return '*';
+      }
+
+      var WECHAT_PARENT_ORIGIN = getParentOrigin();
+      var API_HOST = 'https://ls.hainanjunfeng.com';
+      var API_PREFIX = '/chatserver';
+      var API_PATH = '/app/api/pay/v2/goldPlan/receiptContext';
+      var readyPosted = false;
+      var jumpOutUrl = '';
+
+      var $title = document.getElementById('title');
+      var $ready = document.getElementById('readyBlock');
+      var $loading = document.getElementById('loadingBlock');
+      var $error = document.getElementById('errorBlock');
+      var $amount = document.getElementById('amount');
+      var $orderNo = document.getElementById('orderNo');
+      // var $payTime = document.getElementById('payTime');
+      var $orderTitle = document.getElementById('orderTitle');
+      var $titleRow = document.getElementById('titleRow');
+      var $jumpBtn = document.getElementById('jumpBtn');
+      // var $copyBtn = document.getElementById('copyBtn');
+
+      function getQuery(name) {
+        var value = new URLSearchParams(window.location.search).get(name);
+        return value ? String(value) : '';
+      }
+
+      function canJumpDirectly(url) {
+        return /^https?:\/\//i.test(url || '');
+      }
+
+      function isHttpUrl(url) {
+        return /^http:\/\//i.test(url || '');
+      }
+
+      function tryNavigate(url) {
+        if (!canJumpDirectly(url)) {
+          return false;
+        }
+        try {
+          if (window.top && window.top !== window) {
+            window.top.location.href = url;
+          } else {
+            window.location.href = url;
+          }
+          return true;
+        } catch (e) {
+          try {
+            window.location.href = url;
+            return true;
+          } catch (err) {
+            console.error('navigate failed', err);
+            return false;
+          }
+        }
+      }
+
+      function postToParent(data) {
+        console.log('data33333', data);
+        if (!window.parent || window.parent === window) {
+          return false;
+        }
+        console.log('data22222', data);
+        try {
+          // Some containers expect object payload, some still parse JSON text.
+          window.parent.postMessage(data, WECHAT_PARENT_ORIGIN);
+          window.parent.postMessage(JSON.stringify(data), WECHAT_PARENT_ORIGIN);
+          return true;
+        } catch (e) {
+          console.error('postToParent failed', e);
+          return false;
+        }
+      }
+
+      function postIframeReady(displayStyle, height) {
+        if (readyPosted) return;
+        var payload = { action: 'onIframeReady', displayStyle: displayStyle };
+        if (displayStyle === 'SHOW_CUSTOM_PAGE') {
+          var n = Number(height || 700);
+          payload.height = Math.max(600, Math.min(n, 960));
+        }
+        postToParent(payload);
+        readyPosted = true;
+      }
+
+      function setState(state, msg) {
+        if (state === 'ready') {
+          $title.textContent = '支付成功';
+          $ready.style.display = '';
+          $loading.style.display = 'none';
+          $error.style.display = 'none';
+          return;
+        }
+        if (state === 'error') {
+          $title.textContent = '订单异常';
+          $ready.style.display = 'none';
+          $loading.style.display = 'none';
+          $error.style.display = '';
+          $error.textContent = msg || '订单信息获取失败';
+          return;
+        }
+        $title.textContent = '订单确认中';
+        $ready.style.display = 'none';
+        $loading.style.display = '';
+        $error.style.display = 'none';
+      }
+
+      function updateButtonText(url) {
+        if (!url) {
+          $jumpBtn.textContent = '购买成功，返回商家页面';
+          return;
+        }
+        if (url.indexOf('/contentDetail') > -1) {
+          $jumpBtn.textContent = '购买成功，返回查看文章';
+          return;
+        }
+        if (url.indexOf('/home') > -1) {
+          $jumpBtn.textContent = '购买成功，返回特有料';
+          return;
+        }
+        if (url.indexOf('/my') > -1) {
+          $jumpBtn.textContent = '购买成功，返回特有料';
+          return;
+        }
+        $jumpBtn.textContent = '购买成功，返回查看订单';
+      }
+
+      function formatAmount(amount) {
+        var n = Number(amount);
+        return Number.isFinite(n) ? n.toFixed(2) : '0.00';
+      }
+
+      function initEvents() {
+        $jumpBtn.addEventListener('click', function () {
+          if (jumpOutUrl === undefined || jumpOutUrl === null || jumpOutUrl === '') { return;}
+          console.log('jumpOutUrl11111', jumpOutUrl);
+          var posted = postToParent({ action: 'jumpOut', jumpOutUrl: jumpOutUrl });
+          if (!posted) {
+            var navigated = tryNavigate(jumpOutUrl);
+            if (!navigated && isHttpUrl(jumpOutUrl)) {
+              alert('当前环境可能限制从 HTTPS 跳转到 HTTP，请复制链接后在浏览器打开');
+            }
+          }
+        });
+
+//        $copyBtn.addEventListener('click', function () {
+//          var txt = $orderNo.textContent || '';
+//          if (!txt || txt === '--') return;
+//          if (navigator.clipboard && navigator.clipboard.writeText) {
+//            navigator.clipboard.writeText(txt).catch(function () {});
+//          }
+//        });
+      }
+
+      function buildApiUrl() {
+        return API_HOST + API_PREFIX + API_PATH;
+      }
+
+      function loadReceiptContext() {
+        var subMchId = getQuery('sub_mch_id');
+        var outTradeNo = getQuery('out_trade_no');
+        var checkCode = getQuery('check_code');
+
+        if (!subMchId || !outTradeNo || !checkCode) {
+          setState('error', '缺少点金计划参数');
+          postIframeReady('SHOW_OFFICIAL_PAGE');
+          return;
+        }
+
+        var timer = setTimeout(function () {
+          postIframeReady('SHOW_OFFICIAL_PAGE');
+        }, 2500);
+
+        fetch(buildApiUrl() + '?sub_mch_id=' + encodeURIComponent(subMchId) + '&out_trade_no=' + encodeURIComponent(outTradeNo) + '&check_code=' + encodeURIComponent(checkCode), {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        })
+          .then(function (res) { return res.json(); })
+          .then(function (res) {
+            var code = res && res.code;
+            var data = (res && res.data) || {};
+            console.log('data', data);
+            if (!(code === '0' || code === 0)) {
+              throw new Error((res && res.message) || '获取小票信息失败');
+            }
+
+            if (data.displayStyle === 'SHOW_OFFICIAL_PAGE') {
+              setState('error', data.errorMessage || '当前订单展示官方小票');
+              postIframeReady('SHOW_OFFICIAL_PAGE');
+              return;
+            }
+
+            jumpOutUrl = data.jumpOutUrl || '';
+            updateButtonText(jumpOutUrl);
+
+            $amount.textContent = formatAmount(data.amount);
+            $orderNo.textContent = data.outTradeNo || outTradeNo || '--';
+            // $payTime.textContent = data.payTime || '--';
+            if (data.orderTitle) {
+              $orderTitle.textContent = data.orderTitle;
+              $titleRow.style.display = '';
+            } else {
+              $titleRow.style.display = 'none';
+            }
+
+            setState('ready');
+            postIframeReady('SHOW_CUSTOM_PAGE', data.iframeHeight || 700);
+          })
+          .catch(function (err) {
+            console.log('err', err)
+            setState('error', (err && err.message) || '获取订单信息失败');
+            postIframeReady('SHOW_OFFICIAL_PAGE');
+          })
+          .finally(function () {
+            clearTimeout(timer);
+          });
+      }
+
+      initEvents();
+      setState('loading');
+      loadReceiptContext();
+    })();
+  </script>
+</body>
+</html>

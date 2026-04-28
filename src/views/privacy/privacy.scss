@@ -1,0 +1,147 @@
+@import "@/assets/css/common.scss";
+
+.privacy-page {
+  min-height: calc(var(--vh) * 100);
+  min-height: calc((var(--vh) * 100 - constant(safe-area-inset-bottom)));
+  min-height: calc((var(--vh) * 100 - env(safe-area-inset-bottom)));
+  background: linear-gradient(180deg, #FFD4C4 0%, #FFF5F2 30%, #FFFFFF 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.privacy-content {
+  flex: 1;
+  padding: 20px 24px 40px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.privacy-title {
+  font-weight: 700;
+  font-size: 22px;
+  color: #333333;
+  line-height: 32px;
+  text-align: center;
+  margin-bottom: 32px;
+  padding-top: 10px;
+}
+
+.privacy-section {
+  margin-bottom: 28px;
+  
+  .section-title {
+    font-weight: 600;
+    font-size: 18px;
+    color: #333333;
+    line-height: 26px;
+    margin-bottom: 16px;
+  }
+  
+  .section-content {
+    .section-item {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      .item-number {
+        font-weight: 600;
+        font-size: 16px;
+        color: #333333;
+        line-height: 24px;
+        margin-bottom: 8px;
+        flex-shrink: 0;
+      }
+      
+      .item-text {
+        font-size: 15px;
+        color: #666666;
+        line-height: 24px;
+        text-align: justify;
+        word-break: break-word;
+        
+        // 当没有 item-number 时，第一个 item-text 可以独立显示
+        &:first-child:not(:only-child) {
+          margin-top: 0;
+        }
+      }
+      
+      .item-list {
+        margin-top: 8px;
+        padding-left: 8px;
+        
+        .list-item {
+          font-size: 15px;
+          color: #666666;
+          line-height: 24px;
+          margin-bottom: 8px;
+          text-align: justify;
+          word-break: break-word;
+          
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+      
+      .contact-info {
+        margin-top: 12px;
+        padding: 16px;
+        background: #F8F8F8;
+        border-radius: 12px;
+        
+        .contact-item {
+          font-size: 15px;
+          color: #666666;
+          line-height: 24px;
+          margin-bottom: 8px;
+          
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 响应式调整
+@media screen and (max-width: 375px) {
+  .privacy-content {
+    padding: 16px 20px 32px;
+  }
+  
+  .privacy-title {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+  
+  .privacy-section {
+    margin-bottom: 24px;
+    
+    .section-title {
+      font-size: 17px;
+      margin-bottom: 14px;
+    }
+    
+    .section-content {
+      .section-item {
+        margin-bottom: 14px;
+        
+        .item-number {
+          font-size: 15px;
+        }
+        
+        .item-text,
+        .item-list .list-item {
+          font-size: 14px;
+          line-height: 22px;
+        }
+      }
+    }
+  }
+}
+

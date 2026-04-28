@@ -1,0 +1,55 @@
+@import "@/assets/css/common.scss";
+
+.discard-page {
+  height: calc(var(--vh) * 100);
+  height: calc((var(--vh) * 100 - constant(safe-area-inset-bottom)));
+  height: calc((var(--vh) * 100 - env(safe-area-inset-bottom)));
+  background: #EDEEF2;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .discard-tabs {
+    flex: 1;
+    overflow: hidden;
+
+    --nut-tabs-horizontal-titles-item-min-width: 80px;
+
+    :deep(.nut-tabs) {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    :deep(.nut-tabs__titles) {
+      padding: 0 12px;
+    }
+
+    // :deep(.nut-tabs__content) {
+    //   flex: 1;
+    //   // min-height: 0;
+    //   // overflow: hidden;
+    // }
+
+    :deep(.nut-tab-pane) {
+      background: #EDEEF2;
+      overflow: hidden;
+      padding: 0px;
+      min-height: 0;
+      height: calc(var(--vh) * 100 - 46px - 46px);
+      height: calc((var(--vh) * 100 - constant(safe-area-inset-bottom)) - 46px - 46px);
+      height: calc((var(--vh) * 100 - env(safe-area-inset-bottom)) - 46px - 46px);
+    }
+
+    :deep(.nut-tabs__titles-item.active) {
+      color: #ff4d5b;
+      font-weight: 700;
+    }
+
+    :deep(.nut-tabs__titles-item__line) {
+      background: #ff4d5b;
+    }
+  }
+}
+

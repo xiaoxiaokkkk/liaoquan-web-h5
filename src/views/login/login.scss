@@ -1,0 +1,63 @@
+@import "@/assets/css/common.scss";
+
+.login-page {
+  min-height: calc(var(--vh) * 100);
+  // min-height: calc((var(--vh) * 100 - constant(safe-area-inset-bottom)));
+  // min-height: calc((var(--vh) * 100 - env(safe-area-inset-bottom)));
+
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-color: #fff;
+  // color: #fff;
+  display: flex;
+  flex-direction: column;
+  .login-page-content {
+    flex: 1;
+    .page-top {
+      padding-top: 66px;
+      .top-logo {
+        width: 92px;
+        height: 92px;
+        margin: 0 auto;
+        img {
+          width: 92px;
+          height: 92px;
+        }
+      }
+      .top-title {
+        margin-top: 20px;
+        font-weight: 500;
+        font-size: 22px;
+        text-align: center;
+      }
+    }
+    .page-content {
+      padding-top: 125px;
+      padding-bottom: 16px;
+      .login-btn {
+        height: 50px;
+      }
+    }
+  }
+  .login-footer {
+    margin-top: auto;
+    padding-bottom: 80px;
+    color: #fff;
+    text-align: center;
+    :deep(.nut-checkbox__label) {
+      font-weight: 400;
+      font-size: 12px;
+      color: #8F959E;
+      line-height: 17px;
+    }
+    .checkbox-link {
+      color: #666666;
+      text-decoration: none;
+      cursor: pointer;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

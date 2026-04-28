@@ -1,0 +1,47 @@
+// 主色调
+$primary-color: #F9505B;
+$primary-color-end: #F9505B;
+
+
+$secondary-color: #12A08B;
+
+
+$primary-bg-color: #08082C;
+$primary-card-bg-color: hsla(0,0%,100%,.1);
+$primary-border-color: #164942;
+
+
+$primary-color-left: #15A291;
+$primary-color-right: #42E2CE;
+
+
+
+.module-card {
+  background-color: $primary-card-bg-color;
+  border-radius: 10px;
+  color: #fff;
+  overflow: hidden;
+  :deep(.nut-cell__title) {
+    color: #fff !important;
+  }
+  :deep(.nut-cell-group__wrap) {
+    background-color: transparent !important;
+  }
+  :deep(.nut-cell) {
+    background-color: transparent !important;
+  }
+  :deep(.nut-cell-group__wrap) {
+    background-color: transparent !important;
+  }
+}
+
+// .bottom-button {
+//   width: 100%;
+//   height: 48px;
+//   font-size: 16px;
+//   font-weight: 500;
+//   background: linear-gradient(135deg, #FF6B4A 0%, #42E2CE 100%);
+//   border: none;
+//   color: #fff;
+//   // border-radius: 4px;
+// }

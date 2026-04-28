@@ -1,0 +1,50 @@
+@import "@/assets/css/common.scss";
+
+.download-app-page {
+  min-height: calc(var(--vh) * 100);
+  // min-height: calc((var(--vh) * 100 - constant(safe-area-inset-bottom)));
+  // min-height: calc((var(--vh) * 100 - env(safe-area-inset-bottom)));
+
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-color: #fff;
+  // color: #fff;
+  display: flex;
+  flex-direction: column;
+  .download-app-page-content {
+    flex: 1;
+    .page-top {
+      padding-top: 66px;
+      .top-logo {
+        width: 92px;
+        height: 92px;
+        margin: 0 auto;
+        img {
+          width: 92px;
+          height: 92px;
+        }
+      }
+      .top-title {
+        margin-top: 20px;
+        font-weight: 500;
+        font-size: 22px;
+        text-align: center;
+      }
+    }
+    .page-content {
+      padding-top: 80px;
+      padding-bottom: 16px;
+      .download-app-btn {
+        height: 50px;
+      }
+    }
+    .download-qrcode {
+      .download-qrcode-title {
+        margin-top: 10px;
+        font-weight: 500;
+        font-size: 22px;
+        text-align: center;
+      }
+    }
+  }
+}

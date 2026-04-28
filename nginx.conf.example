@@ -1,0 +1,88 @@
+# Nginx 配置示例 - 部署到 /webh5/ 子路径
+# 将此配置添加到你的 Nginx 配置文件中
+
+server {
+    listen 80;
+    server_name your-domain.com;
+    root /path/to/your/dist;  # 修改为你的 dist 目录实际路径
+
+    # ========= 微信验证文件（必须放在最前面，优先级最高）=========
+    # 微信公众平台验证授权回调域名时，会访问：https://域名/MP_verify_xxxxx.txt
+    # 验证文件需要放在服务器根目录，确保可以通过 https 访问
+    # 将验证文件放在 /path/to/wechat-verify/ 目录下（或任意可访问的目录）
+    location ~ ^/MP_verify_[a-zA-Z0-9]+\.txt$ {
+        # 方式1：如果验证文件放在独立目录
+        # alias /path/to/wechat-verify$request_uri;
+        
+        # 方式2：如果验证文件放在 dist 目录的 public 文件夹（推荐）
+        # 将验证文件放到 public/ 目录，Vite 构建时会复制到 dist 根目录
+        root /path/to/your/dist;
+        
+        # 确保返回正确的 Content-Type
+        default_type text/plain;
+        add_header Content-Type text/plain;
+        
+        # 不缓存验证文件
+        expires -1;
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        
+        # 确保文件存在，不存在返回 404
+        try_files $uri =404;
+    }
+    
+    # ========= 图片下载同源代理（解决前端下载 CDN 图片的 CORS 问题）=========
+    # 前端会请求：/__cdn__/lq/xxx/yyy.jpg
+    # Nginx 转发到：https://cdn.hnstylor.cn/lq/xxx/yyy.jpg
+    location /__cdn__/ {
+        proxy_pass https://cdn.hnstylor.cn/;
+        proxy_ssl_server_name on;
+        proxy_set_header Host cdn.hnstylor.cn;
+
+        # 可选：缓存/超时
+        proxy_connect_timeout 10s;
+        proxy_read_timeout 30s;
+    }
+    
+    # 静态资源直接返回，不走 SPA 路由
+    location /webh5/assets/ {
+        # 确保静态资源正确返回，不重定向
+        try_files $uri =404;
+        # 设置正确的 MIME 类型
+        add_header Content-Type application/javascript;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    # CSS 文件
+    location ~* /webh5/assets/.*\.css$ {
+        try_files $uri =404;
+        add_header Content-Type text/css;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    # 图片等静态资源
+    location ~* /webh5/assets/.*\.(png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        try_files $uri =404;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    # favicon.ico
+    location = /webh5/favicon.ico {
+        try_files $uri =404;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    # SPA 路由：所有其他请求都返回 index.html
+    location /webh5/ {
+        try_files $uri $uri/ /webh5/index.html;
+    }
+    
+    # 根路径重定向到 /webh5/
+    location = / {
+        return 301 /webh5/;
+    }
+}
+
