@@ -9,6 +9,7 @@ import {
 import { constantRouterMap } from './router.config.js'
 import { useUserStore } from '@/stores/user'
 import { getSavedHomeRouteParams, saveHomeRouteParams } from '@/utils/homeRouteParams'
+import { isAllowedExternalRedirect } from '@/utils/threeStepRedirect'
 
 // const originalPush = Router.prototype.push
 // Router.prototype.push = function push(location, onResolve, onReject) {
@@ -59,6 +60,11 @@ router.beforeEach((to, from, next) => {
         : Array.isArray(to.query.redirect)
           ? String(to.query.redirect[0] || '')
           : ''
+
+    if (rawRedirect && isAllowedExternalRedirect(rawRedirect)) {
+      next()
+      return
+    }
 
     const redirectPath =
       rawRedirect && rawRedirect.startsWith('/') && rawRedirect !== '/login'

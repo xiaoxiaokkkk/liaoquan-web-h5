@@ -62,6 +62,27 @@ export function buildTicketCallbackUrl({
   return url.toString()
 }
 
+export function sanitizeExternalRedirectPath(redirectUrl) {
+  const url = new URL(redirectUrl)
+  const pathname = url.pathname.replace(/^\/webh5/, '') || '/'
+  return `${pathname}${url.search}`
+}
+
+export function buildLoggedInExternalCallbackUrl({
+  redirectUrl,
+  ticket,
+  mainOrigin,
+  basePath = DEFAULT_BASE_PATH
+}) {
+  const targetUrl = new URL(redirectUrl)
+  return buildTicketCallbackUrl({
+    mainOrigin: mainOrigin || targetUrl.origin,
+    basePath,
+    ticket,
+    redirectPath: sanitizeExternalRedirectPath(redirectUrl)
+  })
+}
+
 export function getAllowedRedirectOrigins() {
   return String(import.meta.env.VITE_THREE_STEP_ALLOWED_REDIRECT_ORIGINS || '')
     .split(',')

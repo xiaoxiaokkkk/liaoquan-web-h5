@@ -35,7 +35,7 @@ import { useUserStore } from '@/stores/user'
 import { createCrossDomainTicket, wechatLogin } from '@/api/user'
 import { isWeChatBrowser } from '@/utils/common'
 import {
-  buildTicketCallbackUrl,
+  buildLoggedInExternalCallbackUrl,
   getThreeStepMainOrigin,
   isAllowedExternalRedirect
 } from '@/utils/threeStepRedirect'
@@ -72,6 +72,21 @@ function buildWeChatOAuthUrl({ appId, redirectUri, state }) {
     state: state || 'STATE'
   })
   return `${base}?${params.toString()}#wechat_redirect`
+}
+
+async function redirectLoggedInUserToExternalTarget(redirectPath) {
+  const ticketRes = await createCrossDomainTicket()
+  if (ticketRes?.code !== 0 || !ticketRes?.data) {
+    throw new Error(ticketRes?.msg || ticketRes?.message || '跨域登录票据创建失败')
+  }
+  const callbackUrl = buildLoggedInExternalCallbackUrl({
+    redirectUrl: redirectPath,
+    ticket: ticketRes.data,
+    mainOrigin: getThreeStepMainOrigin() || undefined,
+    basePath: import.meta.env.BASE_URL || '/'
+  })
+  sessionStorage.removeItem(REDIRECT_CACHE_KEY)
+  window.location.replace(callbackUrl)
 }
 
 async function doWeChatLogin(code) {
@@ -111,20 +126,7 @@ async function doWeChatLogin(code) {
     let redirectPath = rawRedirect
 
     if (redirectPath && isAllowedExternalRedirect(redirectPath)) {
-      const ticketRes = await createCrossDomainTicket()
-      if (ticketRes?.code !== 0 || !ticketRes?.data) {
-        throw new Error(ticketRes?.msg || ticketRes?.message || '跨域登录票据创建失败')
-      }
-      const targetUrl = new URL(redirectPath)
-      const mainOrigin = getThreeStepMainOrigin() || targetUrl.origin
-      const callbackUrl = buildTicketCallbackUrl({
-        mainOrigin,
-        basePath: import.meta.env.BASE_URL || '/',
-        ticket: ticketRes.data,
-        redirectPath: `${targetUrl.pathname.replace(/^\/webh5/, '') || '/'}${targetUrl.search}`
-      })
-      sessionStorage.removeItem(REDIRECT_CACHE_KEY)
-      window.location.replace(callbackUrl)
+      await redirectLoggedInUserToExternalTarget(redirectPath)
       return
     }
 
@@ -190,6 +192,14 @@ onMounted(() => {
   // 微信回调：/login?code=xxx&state=xxx
   const code = route.query.code ? String(route.query.code) : ''
   console.log('code:', code)
+  const redirectPath = route.query.redirect ? String(route.query.redirect) : ''
+  if (!code && userStore.getToken && redirectPath && isAllowedExternalRedirect(redirectPath)) {
+    redirectLoggedInUserToExternalTarget(redirectPath).catch((err) => {
+      console.error('已登录跨域跳转失败：', err)
+      showToast.fail(err?.message || '跨域跳转失败')
+    })
+    return
+  }
   if (code) {
     // 如果微信回调丢了 redirect（常见），从 sessionStorage 里恢复
     const cachedRedirect = sessionStorage.getItem(REDIRECT_CACHE_KEY) || ''
