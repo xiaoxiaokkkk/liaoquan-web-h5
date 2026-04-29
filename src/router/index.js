@@ -49,7 +49,7 @@ router.beforeEach((to, from, next) => {
   const token = userStore.getToken
   
   // 定义不需要登录的页面白名单
-  const whiteList = ['/login', '/error', '/downloadapp', '/mine', '/enter']
+  const whiteList = ['/login', '/error', '/downloadapp', '/mine', '/enter', '/bridge', '/auth-callback']
 
   // 已登录：即使进入 login，也不允许停留在登录页，直接跳回目标页（或首页）
   if (to.path === '/login' && token) {

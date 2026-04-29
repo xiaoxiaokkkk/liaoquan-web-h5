@@ -66,6 +66,20 @@ export const constantRouterMap = [
     meta: { title: '进入页', requiresAuth: false, keepAlive: true, scrollTop: 0 }
   },
   {
+    path: '/bridge',
+    name: 'Bridge',
+    component: () => import('@/views/bridge/index'),
+    hidden: true,
+    meta: { title: '跳转中', requiresAuth: false, keepAlive: false, scrollTop: 0 }
+  },
+  {
+    path: '/auth-callback',
+    name: 'AuthCallback',
+    component: () => import('@/views/auth-callback/index'),
+    hidden: true,
+    meta: { title: '登录中', requiresAuth: false, keepAlive: false, scrollTop: 0 }
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('@/views/login/index'),

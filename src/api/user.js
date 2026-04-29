@@ -26,6 +26,25 @@ export const wechatLogin = (data) => {
   })
 };
 
+export const createCrossDomainTicket = () => {
+  return post("/api/user/auth/ticket/create", {})
+};
+
+export const exchangeCrossDomainTicket = (data) => {
+  const formData = new URLSearchParams()
+  Object.keys(data).forEach(key => {
+    if (data[key] !== undefined && data[key] !== null) {
+      formData.append(key, data[key])
+    }
+  })
+
+  return post("/api/user/auth/ticket/exchange", formData, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+};
+
 // 获取用户信息
 export const getUserInfo = (data) => {
   const formData = new URLSearchParams()

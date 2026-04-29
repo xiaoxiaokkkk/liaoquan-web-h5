@@ -32,8 +32,13 @@ import { showToast } from '@nutui/nutui'
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { wechatLogin } from '@/api/user'
+import { createCrossDomainTicket, wechatLogin } from '@/api/user'
 import { isWeChatBrowser } from '@/utils/common'
+import {
+  buildTicketCallbackUrl,
+  getThreeStepMainOrigin,
+  isAllowedExternalRedirect
+} from '@/utils/threeStepRedirect'
 
 const checked = ref(false)
 const isLoading = ref(false)
@@ -104,6 +109,24 @@ async function doWeChatLogin(code) {
       (route.query.redirect ? String(route.query.redirect) : '') ||
       (sessionStorage.getItem(REDIRECT_CACHE_KEY) || '')
     let redirectPath = rawRedirect
+
+    if (redirectPath && isAllowedExternalRedirect(redirectPath)) {
+      const ticketRes = await createCrossDomainTicket()
+      if (ticketRes?.code !== 0 || !ticketRes?.data) {
+        throw new Error(ticketRes?.msg || ticketRes?.message || '跨域登录票据创建失败')
+      }
+      const targetUrl = new URL(redirectPath)
+      const mainOrigin = getThreeStepMainOrigin() || targetUrl.origin
+      const callbackUrl = buildTicketCallbackUrl({
+        mainOrigin,
+        basePath: import.meta.env.BASE_URL || '/',
+        ticket: ticketRes.data,
+        redirectPath: `${targetUrl.pathname.replace(/^\/webh5/, '') || '/'}${targetUrl.search}`
+      })
+      sessionStorage.removeItem(REDIRECT_CACHE_KEY)
+      window.location.replace(callbackUrl)
+      return
+    }
 
     // 仅允许站内相对路径，避免 open redirect
     if (redirectPath && redirectPath.startsWith('/')) {
