@@ -21,11 +21,11 @@ assert.equal(
 
 assert.equal(
   buildAuthLoginUrl({
-    authOrigin: 'https://ls.kaletao.cn',
+    authOrigin: 'https://ls.tyliao.cn',
     basePath: '/webh5/',
     redirectUrl: 'https://ls.hainanjunfeng.com/webh5/enter?merchantId=288948594'
   }),
-  'https://ls.kaletao.cn/webh5/login?redirect=https%3A%2F%2Fls.hainanjunfeng.com%2Fwebh5%2Fenter%3FmerchantId%3D288948594'
+  'https://ls.tyliao.cn/webh5/login?redirect=https%3A%2F%2Fls.hainanjunfeng.com%2Fwebh5%2Fenter%3FmerchantId%3D288948594'
 )
 
 assert.equal(
