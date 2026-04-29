@@ -36,6 +36,7 @@ import { createCrossDomainTicket, wechatLogin } from '@/api/user'
 import { isWeChatBrowser } from '@/utils/common'
 import {
   buildLoggedInExternalCallbackUrl,
+  buildLoginCallbackUrl,
   getThreeStepMainOrigin,
   isAllowedExternalRedirect
 } from '@/utils/threeStepRedirect'
@@ -177,8 +178,12 @@ function handleWeChatLogin() {
   // 使用 Vite 注入的 BASE_URL（等同于构建时的 base），避免手拼出错
   // 例如 base='/webh5/' 时，回调就是 https://域名/webh5/login
   const baseUrl = import.meta.env.BASE_URL || '/'
-  // 回调地址尽量保持干净，只回到 /login；redirect 通过 sessionStorage 恢复
-  const redirectUri = new URL(`${baseUrl}login`, window.location.origin).toString()
+  // iOS 微信授权回跳可能丢 sessionStorage，redirect 必须显式放进 redirect_uri
+  const redirectUri = buildLoginCallbackUrl({
+    origin: window.location.origin,
+    basePath: baseUrl,
+    redirectUrl: rawRedirect
+  })
 
   console.log('redirectUri (encoded):', redirectUri)
   

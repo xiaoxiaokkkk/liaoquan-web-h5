@@ -41,6 +41,18 @@ export function buildAuthLoginUrl({ authOrigin, basePath = DEFAULT_BASE_PATH, re
   return url.toString()
 }
 
+export function buildLoginCallbackUrl({ origin, basePath = DEFAULT_BASE_PATH, redirectUrl }) {
+  const normalizedOrigin = normalizeOrigin(origin)
+  if (!normalizedOrigin) {
+    throw new Error('origin is required')
+  }
+  const url = new URL(`${normalizeBasePath(basePath)}login`, normalizedOrigin)
+  if (redirectUrl) {
+    url.searchParams.set('redirect', redirectUrl)
+  }
+  return url.toString()
+}
+
 export function buildTicketCallbackUrl({
   mainOrigin,
   basePath = DEFAULT_BASE_PATH,
