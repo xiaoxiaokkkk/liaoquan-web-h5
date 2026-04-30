@@ -15,6 +15,10 @@ export default defineConfig(({ mode }) => {
   // 加载环境变量（根据 mode 加载对应的 .env 文件）
   // 例如：mode='release' 会加载 .env.release
   const env = loadEnv(mode, process.cwd(), '')
+  // 构建版本号用于打散微信内置浏览器等环境的静态资源缓存。
+  // 可通过 BUILD_VERSION=20260430 npm run build 指定；不指定时每次构建自动使用时间戳。
+  const rawBuildVersion = process.env.BUILD_VERSION || env.VITE_BUILD_VERSION || String(Date.now())
+  const buildVersion = String(rawBuildVersion).replace(/[^a-zA-Z0-9_-]/g, '') || String(Date.now())
   
   // 设置基础路径，支持通过环境变量 VITE_BASE_PATH 配置
   // 例如：VITE_BASE_PATH=/h5/ 或 VITE_BASE_PATH=/liaoquan/
@@ -159,9 +163,9 @@ export default defineConfig(({ mode }) => {
           'utils-vendor': ['axios'],
         },
         // 文件命名
-        chunkFileNames: 'assets/js/[name]-[hash].js',
-        entryFileNames: 'assets/js/[name]-[hash].js',
-        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+        chunkFileNames: `assets/js/[name]-${buildVersion}-[hash].js`,
+        entryFileNames: `assets/js/[name]-${buildVersion}-[hash].js`,
+        assetFileNames: `assets/[ext]/[name]-${buildVersion}-[hash].[ext]`,
       },
     },
   },

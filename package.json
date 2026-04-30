@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --force --mode development",
     "build": "vite build --mode release",
+    "test:build-version": "node scripts/test-build-versioned-assets.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
