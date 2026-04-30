@@ -7,7 +7,7 @@ import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   buildAuthLoginUrl,
-  buildMainEnterUrl,
+  buildMainTargetUrl,
   getThreeStepAuthOrigin,
   getThreeStepMainOrigin
 } from '@/utils/threeStepRedirect'
@@ -23,7 +23,7 @@ onMounted(() => {
     return
   }
 
-  const redirectUrl = buildMainEnterUrl(route.query, mainOrigin, import.meta.env.BASE_URL || '/webh5/')
+  const redirectUrl = buildMainTargetUrl(route.query, mainOrigin, import.meta.env.BASE_URL || '/webh5/')
   const authLoginUrl = buildAuthLoginUrl({
     authOrigin,
     basePath: import.meta.env.BASE_URL || '/webh5/',

@@ -28,6 +28,21 @@ export function buildMainEnterUrl(query, mainOrigin, basePath = DEFAULT_BASE_PAT
   return appendQuery(url, query).toString()
 }
 
+export function buildMainContentDetailUrl(query, mainOrigin, basePath = DEFAULT_BASE_PATH) {
+  const origin = normalizeOrigin(mainOrigin)
+  if (!origin) {
+    throw new Error('mainOrigin is required')
+  }
+  const url = new URL(`${normalizeBasePath(basePath)}contentDetail`, origin)
+  return appendQuery(url, query).toString()
+}
+
+export function buildMainTargetUrl(query, mainOrigin, basePath = DEFAULT_BASE_PATH) {
+  return query && query.contentId !== undefined && query.contentId !== null
+    ? buildMainContentDetailUrl(query, mainOrigin, basePath)
+    : buildMainEnterUrl(query, mainOrigin, basePath)
+}
+
 export function buildAuthLoginUrl({ authOrigin, basePath = DEFAULT_BASE_PATH, redirectUrl }) {
   const origin = normalizeOrigin(authOrigin)
   if (!origin) {
