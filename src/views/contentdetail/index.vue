@@ -168,13 +168,22 @@
             <span class="coupon-count">{{ availableCouponCount }}张 </span><span class="coupon-count-text">可使用</span>
           </template>
         </nut-cell>
-        <nut-cell center class="alipay-cell">
+        <!-- <nut-cell center class="alipay-cell">
           <template #icon>
             <img :src="wechatIcon" alt="alipay" class="alipay-icon" />
           </template>
           <template #title>微信</template>
           <template #link>
             <nut-checkbox v-model="checkedWechatPay" readonly icon-size="20" />
+          </template>
+        </nut-cell> -->
+        <nut-cell center class="alipay-cell">
+          <template #icon>
+            <img :src="alipay" alt="alipay" class="alipay-icon" />
+          </template>
+          <template #title>支付宝</template>
+          <template #link>
+            <nut-checkbox v-model="checkedAlipay" readonly icon-size="20" />
           </template>
         </nut-cell>
       </nut-cell-group>
@@ -249,6 +258,7 @@ import {
   convertToItmsApps
 } from '@/utils/common'
 import wechatIcon from '@/assets/images/wechat.png'
+import alipay from '@/assets/images/alipay.png'
 
 import unLock from '@/assets/images/content/un-lock.png'
 import lockSmall from '@/assets/images/content/lock-small.png'
@@ -278,6 +288,7 @@ const showPayStatusDialog = ref(false)
 const showPaySuccessDialog = ref(false)
 const checkedWechatPay = ref(true)
 const visibleDownloadApp = ref(false)
+const checkedAlipay = ref(true)
 
 const detail = ref({
   id: 0,
@@ -677,6 +688,7 @@ let visibilityHandler = null
 let pageShowHandler = null
 
 function setPendingPayContentId(id) {
+  if (!id) return
   localStorage.setItem(PAY_CHECK_KEY, String(id))
 }
 
@@ -708,7 +720,7 @@ const checkPaymentStatus = async () => {
     }
     showToast.loading('加载中...',{duration: 0 })
     const { data, code, message } = await getContentDetail(checkId, params)
-    if (code !== '0') {
+    if (code !== '0' && code !== 0) {
       showToast.hide()
       showToast.fail(message || '加载失败')
       return
@@ -744,50 +756,110 @@ const tryResumePendingPayCheck = () => {
 }
 
 const onPay = async () => {
+  if (!checkedAlipay.value) {
+    showToast.fail('请选择支付方式')
+    return
+  }
+
   showPayPopup.value = false
   const params = {
     userId: userStore.userInfo.userid,
     category: "支付文章",
-    payType: "HFWXJSN",
+    payType: "HFALIZN",
     chargeAmount: detail.value.price,
-    coinAmount: detail.value.price * 100,
+    coinAmount: multiply(detail.value.price, 100, 0),
     packName: "tylan",
     contentId: detail.value.id
   }
-  console.log('params', params)
+  // console.log('params', params)
   try {
     showToast.loading('支付中...', {duration: 0})
     const { data, code, message } = await payOrder(params)
     // 修复逻辑错误：应该使用 && 而不是 ||
     if (code !== '0' && code !== 0) {
-      throw new Error(message || '支付下单失败')
+      throw new Error(message || '支付失败')
     }
-
-    if (data == null || data === '') {
-      throw new Error('未获取到支付信息')
+    
+    // 获取支付URL
+    const payUrl = data || ''
+    if (!payUrl) {
+      throw new Error('未获取到支付链接')
     }
-
     showPayStatusDialog.value = true
+    
+    console.log('支付链接:', payUrl)
+    
+    // 保存支付标记，用于返回时检测支付状态
     setPendingPayContentId(detail.value.id)
-
+    
     showToast.hide()
-
-    try {
-      await runWakeUpPayChannels(data)
-      await checkPaymentStatus()
-    } catch (e) {
-      showPayStatusDialog.value = false
-      clearPendingPayContentId()
-      throw e
+    
+    // H5拉起支付宝支付
+    // 如果是支付宝二维码链接，直接跳转
+    if (payUrl.startsWith('https://qr.alipay.com/') || payUrl.startsWith('http://qr.alipay.com/')) {
+      // 移动端直接跳转到支付链接
+      window.location.href = payUrl
+    } else if (payUrl.startsWith('alipays://')) {
+      // 支付宝scheme协议，直接跳转
+      window.location.href = payUrl
+    } else {
+      // 其他情况，尝试直接跳转
+      window.location.href = payUrl
     }
   } catch (error) {
     console.error(error)
     showToast.hide()
-    showToast.fail(error?.message || '支付失败，请重试')
+    showToast.fail(error?.message || '支付失败')
     // 支付失败时清除标记
     clearPendingPayContentId()
   }
 }
+
+// const onPay = async () => {
+//   showPayPopup.value = false
+//   const params = {
+//     userId: userStore.userInfo.userid,
+//     category: "支付文章",
+//     payType: "HFWXJSN",
+//     chargeAmount: detail.value.price,
+//     coinAmount: detail.value.price * 100,
+//     packName: "tylan",
+//     contentId: detail.value.id
+//   }
+//   console.log('params', params)
+//   try {
+//     showToast.loading('支付中...', {duration: 0})
+//     const { data, code, message } = await payOrder(params)
+//     // 修复逻辑错误：应该使用 && 而不是 ||
+//     if (code !== '0' && code !== 0) {
+//       throw new Error(message || '支付下单失败')
+//     }
+
+//     if (data == null || data === '') {
+//       throw new Error('未获取到支付信息')
+//     }
+
+//     showPayStatusDialog.value = true
+//     setPendingPayContentId(detail.value.id)
+
+//     showToast.hide()
+
+//     try {
+//       await runWakeUpPayChannels(data)
+//       await checkPaymentStatus()
+//     } catch (e) {
+//       showPayStatusDialog.value = false
+//       clearPendingPayContentId()
+//       throw e
+//     }
+//   } catch (error) {
+//     console.error(error)
+//     showToast.hide()
+//     showToast.fail(error?.message || '支付失败，请重试')
+//     // 支付失败时清除标记
+//     clearPendingPayContentId()
+//   }
+// }
 
 
 onMounted(() => {
