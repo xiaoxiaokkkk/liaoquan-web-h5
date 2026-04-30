@@ -136,3 +136,20 @@ export const getFollowMerchantList = (data) => {
     }
   })
 };
+
+/**
+ * 检测用户是否被封禁
+ * @param {number|string} userId
+ * @returns {Promise}
+ */
+export const checkUserBlackStatus = (userId) => {
+  const formData = new URLSearchParams()
+  if (userId !== undefined && userId !== null && userId !== '') {
+    formData.append('userId', userId)
+  }
+  return post('/api/user/black/check', formData, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}

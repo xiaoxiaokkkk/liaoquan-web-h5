@@ -73,13 +73,14 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onActivated, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { showToast } from '@nutui/nutui'
 import { getUserInfo, bindPromotion, addAttention } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import { saveLastMerchant } from '@/api/content'
 import { mergeHomeRouteParams, saveHomeRouteParams } from '@/utils/homeRouteParams'
+import { runUserBlackCheck } from '@/utils/blackCheck'
 // import { 
 //   iosUrl, 
 //   androidUrl, 
@@ -227,7 +228,11 @@ watch(activeTab, () => {
 })
 
 onMounted(async () => {
-  // await fetchMerchant()
+  await runUserBlackCheck()
+})
+
+onActivated(async () => {
+  await runUserBlackCheck()
 })
 
 const customToast = (message) => {

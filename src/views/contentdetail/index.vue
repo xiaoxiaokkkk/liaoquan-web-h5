@@ -236,7 +236,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onActivated, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { showToast, showDialog } from '@nutui/nutui'
 import Navbar from '@/components/Navbar.vue'
@@ -247,6 +247,7 @@ import { getAvailableCouponList } from '@/api/coupon'
 import { payOrder } from '@/api/order'
 import { multiply } from '@/utils/math'
 import { runWakeUpPayChannels } from '@/utils/wechatPay'
+import { runUserBlackCheck } from '@/utils/blackCheck'
 import {
   iosUrl,
   androidUrl,
@@ -863,6 +864,7 @@ const onPay = async () => {
 
 
 onMounted(() => {
+  runUserBlackCheck()
   fetchDetail()
   tryResumePendingPayCheck()
 
@@ -877,6 +879,10 @@ onMounted(() => {
     tryResumePendingPayCheck()
   }
   window.addEventListener('pageshow', pageShowHandler)
+})
+
+onActivated(() => {
+  runUserBlackCheck()
 })
 
 watch(
