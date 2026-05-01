@@ -151,7 +151,6 @@
 <script setup>
 import { computed, onActivated, onMounted, reactive, ref, watch, nextTick } from 'vue'
 import { showToast } from '@nutui/nutui'
-import { useRouter } from 'vue-router'
 import { getContentList } from '@/api/content'
 import { multiply } from '@/utils/math'
 
@@ -170,8 +169,6 @@ import imgBlack from '@/assets/images/home/black.png'
 import imgRed from '@/assets/images/home/red.png'
 import imgRun from '@/assets/images/home/run.png'
 import imgTimesPkg from '@/assets/images/home/times-pkg.png'
-
-const router = useRouter()
 
 const props = defineProps({
   merchantId: { type: [Number, String], default: 1 },
@@ -785,13 +782,10 @@ onActivated(() => {
 
 const toContentDetail = (item, event) => {
   saveClickedAnchor(item, event)
-  router.push({
-    path: '/contentDetail',
-    query: {
-      contentId: String(item.id),
-      fromHome: '1'
-    }
-  })
+  const baseUrl = import.meta.env.BASE_URL || '/'
+  const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
+  const contentId = encodeURIComponent(String(item.id))
+  window.location.assign(`${normalizedBaseUrl}contentDetail?contentId=${contentId}&fromHome=1`)
 }
 
 
