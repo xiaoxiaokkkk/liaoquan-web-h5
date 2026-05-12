@@ -77,6 +77,16 @@
                 <img :src="customer" alt="customer" class="customer-icon">
               </template>
             </nut-cell>
+            <nut-cell title="服务协议" is-link center @click="router.push('/agreement')">
+              <template #icon>
+                <img :src="coupon2" alt="agreement" class="agreement-icon">
+              </template>
+            </nut-cell>
+            <nut-cell title="隐私政策" is-link center @click="router.push('/privacyPolicy')">
+              <template #icon>
+                <img :src="coupon1" alt="coupon-1" class="coupon-icon">
+              </template>
+            </nut-cell>
             <nut-cell title="退出登录" is-link center @click="logout">
               <template #icon>
                 <img :src="setting" alt="setting" class="setting-icon">

@@ -9,7 +9,7 @@ import NutUI from '@nutui/nutui'
 import '@nutui/nutui/dist/styles/themes/default.scss'
 import { useUserStore } from './stores/user'
 import { isWeChatBrowser } from './utils/common'
-// import('vconsole').then(({ default: VConsole }) => new VConsole())
+import('vconsole').then(({ default: VConsole }) => new VConsole())
 
 // 尝试隐藏微信 WebView 底部工具栏（后退/前进等）
 // 注意：这是微信客户端 UI，部分微信版本/系统可能不允许彻底隐藏

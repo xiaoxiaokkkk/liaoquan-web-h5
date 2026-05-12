@@ -40,6 +40,11 @@ import {
   getThreeStepMainOrigin,
   isAllowedExternalRedirect
 } from '@/utils/threeStepRedirect'
+import {
+  getSavedPromotionParams,
+  savePromotionParams,
+  savePromotionParamsFromUrl
+} from '@/utils/promotionParams'
 
 const checked = ref(false)
 const isLoading = ref(false)
@@ -73,6 +78,34 @@ function buildWeChatOAuthUrl({ appId, redirectUri, state }) {
     state: state || 'STATE'
   })
   return `${base}?${params.toString()}#wechat_redirect`
+}
+
+function getQueryStringValue(key) {
+  const routeValue = route.query?.[key]
+  if (Array.isArray(routeValue)) {
+    return routeValue[0] ? String(routeValue[0]) : ''
+  }
+  if (routeValue) {
+    return String(routeValue)
+  }
+  return new URLSearchParams(window.location.search).get(key) || ''
+}
+
+function buildPromotionRedirectUrl() {
+  const saved = getSavedPromotionParams()
+  const merchantId = getQueryStringValue('merchantId') || saved.merchantId
+  const userId = getQueryStringValue('userId') || saved.superiorId
+  if (!merchantId && !userId) return ''
+
+  const mainOrigin = getThreeStepMainOrigin()
+  if (!mainOrigin) return ''
+
+  const baseUrl = import.meta.env.BASE_URL || '/webh5/'
+  const normalizedBase = baseUrl === '/' ? '/' : `/${String(baseUrl).replace(/^\/+|\/+$/g, '')}/`
+  const url = new URL(`${normalizedBase}lqindex`, mainOrigin)
+  if (merchantId) url.searchParams.set('merchantId', merchantId)
+  if (userId) url.searchParams.set('userId', userId)
+  return url.toString()
 }
 
 async function redirectLoggedInUserToExternalTarget(redirectPath) {
@@ -122,8 +155,10 @@ async function doWeChatLogin(code) {
     // 注意：不要把 BASE_URL/basePath 拼进路由跳转里（router 已经通过 createWebHistory(base) 处理过），否则会命中 404
     const basePrefix = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '') // 例如 '/webh5'
     const rawRedirect =
-      (route.query.redirect ? String(route.query.redirect) : '') ||
-      (sessionStorage.getItem(REDIRECT_CACHE_KEY) || '')
+      getQueryStringValue('redirect') ||
+      (sessionStorage.getItem(REDIRECT_CACHE_KEY) || '') ||
+      buildPromotionRedirectUrl()
+    console.log('login rawRedirect:', rawRedirect)
     let redirectPath = rawRedirect
 
     if (redirectPath && isAllowedExternalRedirect(redirectPath)) {
@@ -141,7 +176,7 @@ async function doWeChatLogin(code) {
       redirectPath = ''
     }
 
-    router.replace(redirectPath || '/home')
+    router.replace(redirectPath || '/lqindex')
     // 清理缓存，避免下次误用
     sessionStorage.removeItem(REDIRECT_CACHE_KEY)
   } finally {
@@ -168,7 +203,13 @@ function handleWeChatLogin() {
   }
 
   // 缓存登录前的目标地址（包含 merchantId 等 query），用于微信授权回调后恢复
-  const rawRedirect = route.query.redirect ? String(route.query.redirect) : ''
+  savePromotionParams({
+    merchantId: getQueryStringValue('merchantId'),
+    userId: getQueryStringValue('userId')
+  })
+  savePromotionParamsFromUrl()
+  const rawRedirect = getQueryStringValue('redirect') || buildPromotionRedirectUrl()
+  console.log('login handle rawRedirect:', rawRedirect)
   if (rawRedirect) {
     sessionStorage.setItem(REDIRECT_CACHE_KEY, rawRedirect)
   } else {
@@ -194,10 +235,22 @@ function handleWeChatLogin() {
 }
 
 onMounted(() => {
+  savePromotionParams({
+    merchantId: getQueryStringValue('merchantId'),
+    userId: getQueryStringValue('userId')
+  })
+  savePromotionParamsFromUrl()
   // 微信回调：/login?code=xxx&state=xxx
-  const code = route.query.code ? String(route.query.code) : ''
+  const code = getQueryStringValue('code')
   console.log('code:', code)
-  const redirectPath = route.query.redirect ? String(route.query.redirect) : ''
+  console.log('login mounted fullPath:', route.fullPath)
+  console.log('login mounted route query:', route.query)
+  console.log('login location href:', window.location.href)
+  console.log('login location search:', window.location.search)
+  console.log('login mounted redirect:', route.query.redirect)
+  console.log('login cached redirect:', sessionStorage.getItem(REDIRECT_CACHE_KEY) || '')
+  const redirectPath = getQueryStringValue('redirect') || buildPromotionRedirectUrl()
+  console.log('login parsed redirect:', redirectPath)
   if (!code && userStore.getToken && redirectPath && isAllowedExternalRedirect(redirectPath)) {
     redirectLoggedInUserToExternalTarget(redirectPath).catch((err) => {
       console.error('已登录跨域跳转失败：', err)
@@ -208,7 +261,7 @@ onMounted(() => {
   if (code) {
     // 如果微信回调丢了 redirect（常见），从 sessionStorage 里恢复
     const cachedRedirect = sessionStorage.getItem(REDIRECT_CACHE_KEY) || ''
-    if (!route.query.redirect && cachedRedirect) {
+    if (!getQueryStringValue('redirect') && cachedRedirect) {
       const nextQuery0 = { ...route.query, redirect: cachedRedirect }
       delete nextQuery0.code
       delete nextQuery0.state

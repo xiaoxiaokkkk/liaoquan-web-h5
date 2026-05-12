@@ -9,6 +9,7 @@ import {
 import { constantRouterMap } from './router.config.js'
 import { useUserStore } from '@/stores/user'
 import { getSavedHomeRouteParams, saveHomeRouteParams } from '@/utils/homeRouteParams'
+import { savePromotionParams } from '@/utils/promotionParams'
 import { isAllowedExternalRedirect } from '@/utils/threeStepRedirect'
 
 // const originalPush = Router.prototype.push
@@ -48,9 +49,10 @@ const router = createRouter( {
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
   const token = userStore.getToken
+  savePromotionParams(to.query)
   
   // 定义不需要登录的页面白名单
-  const whiteList = ['/login', '/error', '/downloadapp', '/mine', '/enter', '/bridge', '/auth-callback']
+  const whiteList = ['/login', '/error', '/downloadapp', '/mine', '/enter', '/bridge', '/auth-callback', '/agreement', '/privacyPolicy']
 
   // 已登录：即使进入 login，也不允许停留在登录页，直接跳回目标页（或首页）
   if (to.path === '/login' && token) {

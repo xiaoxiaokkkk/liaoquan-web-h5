@@ -24,7 +24,7 @@ export function buildMainEnterUrl(query, mainOrigin, basePath = DEFAULT_BASE_PAT
   if (!origin) {
     throw new Error('mainOrigin is required')
   }
-  const url = new URL(`${normalizeBasePath(basePath)}enter`, origin)
+  const url = new URL(`${normalizeBasePath(basePath)}lqindex`, origin)
   return appendQuery(url, query).toString()
 }
 

@@ -46,7 +46,7 @@
               <!-- 搜索 + 列表 抽到子组件 -->
               <ContentList
                 style="flex: 1; min-height: 0;"
-                :merchant-id="merchantId || 1"
+                :merchant-id="merchantId || DEFAULT_MERCHANT_ID"
                 :tab-key="activeTab"
                 :filter-value="filterValue"
               />
@@ -54,7 +54,7 @@
             <!-- <nut-tab-pane title="包时套餐" pane-key="package">
               <PackageList
                 style="flex: 1; min-height: 0;"
-                :merchant-id="merchantId || 1"
+                :merchant-id="merchantId || DEFAULT_MERCHANT_ID"
                 :tab-key="activeTab"
               />
             </nut-tab-pane>
@@ -62,13 +62,34 @@
               <DiscardList
                 style="flex: 1; min-height: 0;"
                 :tab-key="activeTab"
-                :merchant-id="merchantId || 1"
+                :merchant-id="merchantId || DEFAULT_MERCHANT_ID"
               />
             </nut-tab-pane> -->
           </nut-tabs>
         </div>
       </div>
     </div>
+
+    <nut-dialog
+      teleport="#app"
+      v-model:visible="showAppPromoDialog"
+      title="去特有料APP看看"
+      custom-class="custom-dialog"
+      pop-class="custom-dialog app-promo-pop"
+      :no-ok-btn="true"
+      no-cancel-btn
+      :close-on-click-overlay="false"
+    >
+      <div class="app-promo-dialog-body">
+        <p class="app-promo-desc">体验更加完整、流畅。</p>
+        <nut-button block type="primary" color="#F9505B" class="app-promo-open" @click="openDownloadAppByLocation">
+          立即打开
+        </nut-button>
+        <p class="app-promo-continue" role="button" tabindex="0" @click="dismissAppPromoForSession">
+          继续使用浏览器
+        </p>
+      </div>
+    </nut-dialog>
   </div>
 </template>
 
@@ -80,6 +101,7 @@ import { getUserInfo, bindPromotion, addAttention } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import { saveLastMerchant } from '@/api/content'
 import { mergeHomeRouteParams, saveHomeRouteParams } from '@/utils/homeRouteParams'
+import { getSavedPromotionParams, savePromotionParams, savePromotionParamsFromUrl } from '@/utils/promotionParams'
 import { runUserBlackCheck } from '@/utils/blackCheck'
 // import { 
 //   iosUrl, 
@@ -113,6 +135,9 @@ const route = useRoute()
 const router = useRouter()
 const merchant = ref({})
 
+/** 路由与本地均未带 merchantId 时的默认商家 */
+const DEFAULT_MERCHANT_ID = 422456811
+
 // 商家ID
 const merchantId = ref(undefined)
 
@@ -125,13 +150,28 @@ const currentTab = ref(undefined)
 const activeTab = ref('material')
 
 function syncHomeParams() {
+  savePromotionParams(route.query)
+  savePromotionParamsFromUrl()
   const merged = mergeHomeRouteParams(route)
+  const savedPromotion = getSavedPromotionParams()
+  if (!merged.userId && savedPromotion.superiorId) {
+    merged.userId = savedPromotion.superiorId
+  }
+  if (!merged.merchantId && savedPromotion.merchantId) {
+    merged.merchantId = savedPromotion.merchantId
+  }
   // 持久化（路由优先，后续 tabbar 切换会从 localStorage 带回）
   saveHomeRouteParams({ query: merged })
 
-  merchantId.value = merged.merchantId
+  merchantId.value = merged.merchantId ?? DEFAULT_MERCHANT_ID
   superiorId.value = merged.userId
   currentTab.value = merged.tab
+  console.log('index home params:', {
+    routeQuery: route.query,
+    merged,
+    merchantId: merchantId.value,
+    superiorId: superiorId.value
+  })
   if (merged.tab) activeTab.value = merged.tab
 }
 
@@ -215,7 +255,7 @@ const fetchBindPromotion = async () => {
     merchantId: merchantId.value,
     userId: userStore.userInfo.userid
   }
-  console.log('params', params)
+  console.log('fetchBindPromotion params', params)
   const { code, msg, message } = await bindPromotion(params)
   if (code !== 0 && code !== '0') {
     throw new Error(msg || message || '绑定推广关系失败')
@@ -227,8 +267,41 @@ watch(activeTab, () => {
   // 列表由 ContentList 内部监听 tabKey 变化后自动刷新
 })
 
+const APP_PROMO_SESSION_KEY = 'lqindex_app_promo_continue_browser'
+const showAppPromoDialog = ref(false)
+
+function getDownloadAppFullHref() {
+  const base = import.meta.env.BASE_URL || '/'
+  const normalized = base.endsWith('/') ? base : `${base}/`
+  return new URL('downloadapp', `${window.location.origin}${normalized}`).href
+}
+
+function openDownloadAppByLocation() {
+  window.location.href = getDownloadAppFullHref()
+}
+
+function dismissAppPromoForSession() {
+  showAppPromoDialog.value = false
+  try {
+    sessionStorage.setItem(APP_PROMO_SESSION_KEY, '1')
+  } catch (_) {
+    /* ignore */
+  }
+}
+
+function tryOpenAppPromoDialog() {
+  try {
+    if (sessionStorage.getItem(APP_PROMO_SESSION_KEY) === '1') return
+  } catch (_) {
+    /* ignore */
+  }
+  showAppPromoDialog.value = true
+}
+
 onMounted(async () => {
   await runUserBlackCheck()
+  // 下一宏任务再打开，避免与首屏请求、布局抢同一帧
+  setTimeout(() => tryOpenAppPromoDialog(), 0)
 })
 
 onActivated(async () => {

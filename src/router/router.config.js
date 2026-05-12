@@ -61,10 +61,16 @@ export const constantRouterMap = [
   {
     path: '/enter',
     name: 'Enter',
-    component: () => import('@/views/enter/index'),
-    hidden: true,
+    redirect: (to) => ({ path: '/lqindex', query: to.query, hash: to.hash }),
     meta: { title: '进入页', requiresAuth: false, keepAlive: true, scrollTop: 0 }
   },
+  // {
+  //   path: '/enter',
+  //   name: 'Enter',
+  //   component: () => import('@/views/enter/index'),
+  //   hidden: true,
+  //   meta: { title: '进入页', requiresAuth: false, keepAlive: true, scrollTop: 0 }
+  // },
   {
     path: '/bridge',
     name: 'Bridge',
@@ -92,6 +98,20 @@ export const constantRouterMap = [
     component: () => import('@/views/error/index'),
     hidden: true,
     meta: { title: '页面不存在', requiresAuth: false }
+  },
+  {
+    path: '/privacyPolicy',
+    name: 'PrivacyPolicy',
+    component: () => import('@/views/privacy-policy/index.vue'),
+    hidden: true,
+    meta: { title: '隐私政策', requiresAuth: false, keepAlive: false, scrollTop: 0 }
+  },
+  {
+    path: '/agreement',
+    name: 'Agreement',
+    component: () => import('@/views/agreement/index.vue'),
+    hidden: true,
+    meta: { title: '服务协议', requiresAuth: false, keepAlive: false, scrollTop: 0 }
   },
   {
     path: '/coupons',
@@ -140,6 +160,17 @@ export const constantRouterMap = [
   //   hidden: true,
   //   meta: { title: '响应异常', requiresAuth: false }
   // },
+  // 历史/外链使用的短链前缀：无对应页面时会落到 NotFound → /error，统一回到首页
+  {
+    path: '/lqi_:legacyPath(.*)',
+    name: 'LegacyLqiRoute',
+    redirect: (to) => ({ path: '/lqindex', query: to.query, hash: to.hash })
+  },
+  {
+    path: '/lq3_:legacyPath(.*)',
+    name: 'LegacyLq3Route',
+    redirect: (to) => ({ path: '/lqindex', query: to.query, hash: to.hash })
+  },
   // 404路由：匹配所有未定义的路由，必须放在最后
   {
     path: '/:pathMatch(.*)*',

@@ -65,7 +65,7 @@
               <!-- 搜索 + 列表 抽到子组件 -->
               <ContentList
                 style="flex: 1; min-height: 0;"
-                :merchant-id="merchantId || 1"
+                :merchant-id="merchantId || DEFAULT_MERCHANT_ID"
                 :tab-key="activeTab"
                 :filter-value="filterValue"
               />
@@ -73,7 +73,7 @@
             <nut-tab-pane title="包时套餐" pane-key="package">
               <PackageList
                 style="flex: 1; min-height: 0;"
-                :merchant-id="merchantId || 1"
+                :merchant-id="merchantId || DEFAULT_MERCHANT_ID"
                 :tab-key="activeTab"
               />
             </nut-tab-pane>
@@ -81,7 +81,7 @@
               <DiscardList
                 style="flex: 1; min-height: 0;"
                 :tab-key="activeTab"
-                :merchant-id="merchantId || 1"
+                :merchant-id="merchantId || DEFAULT_MERCHANT_ID"
               />
             </nut-tab-pane>
           </nut-tabs>
@@ -160,6 +160,7 @@ import { getUserInfo, bindPromotion, addAttention } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import { saveLastMerchant } from '@/api/content'
 import { mergeHomeRouteParams, saveHomeRouteParams } from '@/utils/homeRouteParams'
+import { getSavedPromotionParams, savePromotionParams, savePromotionParamsFromUrl } from '@/utils/promotionParams'
 import { runUserBlackCheck } from '@/utils/blackCheck'
 import { 
   iosUrl, 
@@ -193,6 +194,9 @@ const route = useRoute()
 const router = useRouter()
 const merchant = ref({})
 
+/** 路由与本地均未带 merchantId 时的默认商家 */
+const DEFAULT_MERCHANT_ID = 422456811
+
 // 商家ID
 const merchantId = ref(undefined)
 
@@ -205,11 +209,20 @@ const currentTab = ref(undefined)
 const activeTab = ref('material')
 
 function syncHomeParams() {
+  savePromotionParams(route.query)
+  savePromotionParamsFromUrl()
   const merged = mergeHomeRouteParams(route)
+  const savedPromotion = getSavedPromotionParams()
+  if (!merged.userId && savedPromotion.superiorId) {
+    merged.userId = savedPromotion.superiorId
+  }
+  if (!merged.merchantId && savedPromotion.merchantId) {
+    merged.merchantId = savedPromotion.merchantId
+  }
   // 持久化（路由优先，后续 tabbar 切换会从 localStorage 带回）
   saveHomeRouteParams({ query: merged })
 
-  merchantId.value = merged.merchantId
+  merchantId.value = merged.merchantId ?? DEFAULT_MERCHANT_ID
   superiorId.value = merged.userId
   currentTab.value = merged.tab
   if (merged.tab) activeTab.value = merged.tab

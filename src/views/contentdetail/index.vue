@@ -168,22 +168,22 @@
             <span class="coupon-count">{{ availableCouponCount }}张 </span><span class="coupon-count-text">可使用</span>
           </template>
         </nut-cell>
-        <!-- <nut-cell center class="alipay-cell">
-          <template #icon>
-            <img :src="wechatIcon" alt="alipay" class="alipay-icon" />
-          </template>
-          <template #title>微信</template>
-          <template #link>
-            <nut-checkbox v-model="checkedWechatPay" readonly icon-size="20" />
-          </template>
-        </nut-cell> -->
-        <nut-cell center class="alipay-cell">
+        <nut-cell center class="alipay-cell" @click="selectPayType(PAY_TYPE_ALIPAY)">
           <template #icon>
             <img :src="alipay" alt="alipay" class="alipay-icon" />
           </template>
           <template #title>支付宝</template>
           <template #link>
-            <nut-checkbox v-model="checkedAlipay" readonly icon-size="20" />
+            <nut-checkbox :model-value="selectedPayType === PAY_TYPE_ALIPAY" icon-size="20" />
+          </template>
+        </nut-cell>
+        <nut-cell center class="alipay-cell" @click="selectPayType(PAY_TYPE_WECHAT)">
+          <template #icon>
+            <img :src="wechatIcon" alt="wechat" class="alipay-icon" />
+          </template>
+          <template #title>微信</template>
+          <template #link>
+            <nut-checkbox :model-value="selectedPayType === PAY_TYPE_WECHAT" icon-size="20" />
           </template>
         </nut-cell>
       </nut-cell-group>
@@ -205,8 +205,20 @@
       custom-class="custom-dialog"
       pop-class="custom-wechat"
       @ok="checkPaymentStatus()"
+      @cancel="checkPaymentStatus()"
       >
     </nut-dialog>
+    <nut-dialog
+      v-model:visible="showAndroidAlipayGuideDialog"
+      title="支付宝支付提示"
+      :content="androidAlipayGuideContent"
+      confirmText="我知道了"
+      noCancelBtn
+      :closeOnClickOverlay="false"
+      custom-class="custom-dialog"
+      pop-class="custom-wechat"
+      @ok="handleAndroidAlipayGuideConfirm"
+    />
     <nut-dialog
       v-model:visible="showPaySuccessDialog"
       title="支付成功"
@@ -238,7 +250,7 @@
 <script setup>
 import { computed, onActivated, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { showToast, showDialog } from '@nutui/nutui'
+import { showToast } from '@nutui/nutui'
 import Navbar from '@/components/Navbar.vue'
 import { useUserStore } from '@/stores/user'
 import { shareCallback, addAttention } from '@/api/user'
@@ -287,9 +299,38 @@ const errorMsg = ref('')
 const showPayPopup = ref(false)
 const showPayStatusDialog = ref(false)
 const showPaySuccessDialog = ref(false)
-const checkedWechatPay = ref(true)
+const showAndroidAlipayGuideDialog = ref(false)
+const androidAlipayGuideContent = ref('')
 const visibleDownloadApp = ref(false)
-const checkedAlipay = ref(true)
+const PAY_TYPE_WECHAT = 'wechat'
+const PAY_TYPE_ALIPAY = 'alipay'
+const PAY_STATUS_DIALOG_DELAY = 1000
+
+function isAndroid() {
+  return typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent)
+}
+
+const selectedPayType = ref(isAndroid() ? PAY_TYPE_WECHAT : PAY_TYPE_ALIPAY)
+let payStatusDialogTimer = null
+
+function clearPayStatusDialogTimer() {
+  if (!payStatusDialogTimer) return
+  clearTimeout(payStatusDialogTimer)
+  payStatusDialogTimer = null
+}
+
+function showPayStatusDialogLater(delay = PAY_STATUS_DIALOG_DELAY) {
+  clearPayStatusDialogTimer()
+  payStatusDialogTimer = setTimeout(() => {
+    showPayStatusDialog.value = true
+    payStatusDialogTimer = null
+  }, delay)
+}
+
+function handleAndroidAlipayGuideConfirm() {
+  showAndroidAlipayGuideDialog.value = false
+  showPayStatusDialog.value = true
+}
 
 const detail = ref({
   id: 0,
@@ -756,12 +797,25 @@ const tryResumePendingPayCheck = () => {
   checkPaymentStatus()
 }
 
+const selectPayType = (payType) => {
+  selectedPayType.value = payType
+}
+
 const onPay = async () => {
-  if (!checkedAlipay.value) {
-    showToast.fail('请选择支付方式')
+  if (selectedPayType.value === PAY_TYPE_WECHAT) {
+    await onPayWechat()
     return
   }
 
+  if (selectedPayType.value === PAY_TYPE_ALIPAY) {
+    await onPayAlipay()
+    return
+  }
+
+  showToast.fail('请选择支付方式')
+}
+
+const onPayAlipay = async () => {
   showPayPopup.value = false
   const params = {
     userId: userStore.userInfo.userid,
@@ -786,7 +840,6 @@ const onPay = async () => {
     if (!payUrl) {
       throw new Error('未获取到支付链接')
     }
-    showPayStatusDialog.value = true
     
     console.log('支付链接:', payUrl)
     
@@ -794,6 +847,17 @@ const onPay = async () => {
     setPendingPayContentId(detail.value.id)
     
     showToast.hide()
+
+    if (isAndroid()) {
+      const copied = await copyToClipboard(payUrl)
+      if (copied) {
+        androidAlipayGuideContent.value = '已复制支付宝支付链接。请打开手机浏览器，粘贴链接并访问，按页面提示完成支付宝支付。'
+      } else {
+        androidAlipayGuideContent.value = `支付链接自动复制失败。请复制以下支付链接后打开手机浏览器粘贴访问，按页面提示完成支付宝支付：${payUrl}`
+      }
+      showAndroidAlipayGuideDialog.value = true
+      return
+    }
     
     // H5拉起支付宝支付
     // 如果是支付宝二维码链接，直接跳转
@@ -807,6 +871,7 @@ const onPay = async () => {
       // 其他情况，尝试直接跳转
       window.location.href = payUrl
     }
+    showPayStatusDialogLater()
   } catch (error) {
     console.error(error)
     showToast.hide()
@@ -816,51 +881,53 @@ const onPay = async () => {
   }
 }
 
-// const onPay = async () => {
-//   showPayPopup.value = false
-//   const params = {
-//     userId: userStore.userInfo.userid,
-//     category: "支付文章",
-//     payType: "HFWXJSN",
-//     chargeAmount: detail.value.price,
-//     coinAmount: detail.value.price * 100,
-//     packName: "tylan",
-//     contentId: detail.value.id
-//   }
-//   console.log('params', params)
-//   try {
-//     showToast.loading('支付中...', {duration: 0})
-//     const { data, code, message } = await payOrder(params)
-//     // 修复逻辑错误：应该使用 && 而不是 ||
-//     if (code !== '0' && code !== 0) {
-//       throw new Error(message || '支付下单失败')
-//     }
+const onPayWechat = async () => {
+  showPayPopup.value = false
+  const params = {
+    userId: userStore.userInfo.userid,
+    category: "支付文章",
+    payType: "HFWXJSN",
+    chargeAmount: detail.value.price,
+    coinAmount: multiply(detail.value.price, 100, 0),
+    packName: "tylan",
+    contentId: detail.value.id
+  }
+  console.log('params', params)
+  try {
+    showToast.loading('支付中...', {duration: 0})
+    const { data, code, message } = await payOrder(params)
+    // 修复逻辑错误：应该使用 && 而不是 ||
+    if (code !== '0' && code !== 0) {
+      throw new Error(message || '支付下单失败')
+    }
 
-//     if (data == null || data === '') {
-//       throw new Error('未获取到支付信息')
-//     }
+    if (data == null || data === '') {
+      throw new Error('未获取到支付信息')
+    }
 
-//     showPayStatusDialog.value = true
-//     setPendingPayContentId(detail.value.id)
+    setPendingPayContentId(detail.value.id)
 
-//     showToast.hide()
+    showToast.hide()
 
-//     try {
-//       await runWakeUpPayChannels(data)
-//       await checkPaymentStatus()
-//     } catch (e) {
-//       showPayStatusDialog.value = false
-//       clearPendingPayContentId()
-//       throw e
-//     }
-//   } catch (error) {
-//     console.error(error)
-//     showToast.hide()
-//     showToast.fail(error?.message || '支付失败，请重试')
-//     // 支付失败时清除标记
-//     clearPendingPayContentId()
-//   }
-// }
+    try {
+      await runWakeUpPayChannels(data)
+      await checkPaymentStatus()
+      if (!detail.value.isPaid) {
+        showPayStatusDialogLater()
+      }
+    } catch (e) {
+      showPayStatusDialog.value = false
+      clearPendingPayContentId()
+      throw e
+    }
+  } catch (error) {
+    console.error(error)
+    showToast.hide()
+    showToast.fail(error?.message || '支付失败，请重试')
+    // 支付失败时清除标记
+    clearPendingPayContentId()
+  }
+}
 
 
 onMounted(() => {
@@ -896,9 +963,12 @@ watch(
     shareUserId.value = nextShareUserId
 
     // 切换文章时重置 UI 状态，避免上一次支付弹窗残留
+    clearPayStatusDialogTimer()
     showPayPopup.value = false
     showPayStatusDialog.value = false
     showPaySuccessDialog.value = false
+    showAndroidAlipayGuideDialog.value = false
+    androidAlipayGuideContent.value = ''
 
     // 如果 pendingId 不是当前文章，则清理，避免串单
     const pendingId = getPendingPayContentId()
@@ -997,6 +1067,7 @@ const openUrl = (url) => {
 }
 
 onUnmounted(() => {
+  clearPayStatusDialogTimer()
   // 清理事件监听器
   if (visibilityHandler) {
     document.removeEventListener('visibilitychange', visibilityHandler)

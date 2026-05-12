@@ -349,6 +349,34 @@
     width: 47%;
   }
 }
+
+.app-promo-dialog-body {
+  padding-top: 4px;
+  text-align: center;
+}
+.app-promo-desc {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+.app-promo-open {
+  margin-bottom: 14px;
+}
+.app-promo-continue {
+  margin: 0;
+  font-size: 13px;
+  color: #888;
+  text-decoration: underline;
+  cursor: pointer;
+  user-select: none;
+}
+:deep(.app-promo-pop) {
+  .nut-dialog__content {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
 :deep(.custom-wechat) {
   .nut-dialog__content {
     max-height: none !important;

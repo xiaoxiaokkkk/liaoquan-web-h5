@@ -1,159 +1,96 @@
 <template>
-  <div class="agreement-page">
-    <nut-noticebar :left-icon="false" :scrollable="false" background="#4979f2" color="#fff">
-      <template #left-icon>
-      </template>
-      <span>下载APP，应用商店搜索：</span>
-      <template #right-icon>
-        <img src="@/assets/images/logo.png" alt="logo" style="width: 20px; height: 20px">
-        <span style="margin-left: 5px; margin-right: 10px;">特有料</span>
-        <nut-button size="mini" color="#F9505B" @click="$router.push('/downloadapp')">下载</nut-button>
-      </template>
-    </nut-noticebar>
-    <!-- <Navbar title="用户协议" left="left" right="" backgroundColor="transparent" /> -->
-    <div class="agreement-content">
-      <div class="agreement-title">料圈商城用户协议</div>
-      
-      <!-- 1. 协议主体与效力 -->
-      <div class="agreement-section">
-        <div class="section-title">1. 协议主体与效力</div>
-        <div class="section-content">
-          <div class="section-item">
-            <div class="item-number">1.1</div>
-            <div class="item-text">本协议由【料圈商城】（以下简称"平台"）与使用平台服务的用户（包括普通用户、门店用户、代理用户，以下统称"用户"）共同订立，具有法律效力。</div>
-          </div>
-          <div class="section-item">
-            <div class="item-number">1.2</div>
-            <div class="item-text">用户注册、登录、使用平台服务或参与平台活动，即视为已充分阅读、理解并同意本协议全部条款。若用户不同意本协议，应立即停止使用平台服务。</div>
-          </div>
-          <div class="section-item">
-            <div class="item-number">1.3</div>
-            <div class="item-text">平台有权根据业务发展需要修订本协议，修订后将通过平台站内信、公告等显著方式通知用户。用户继续使用平台服务的，视为同意修订后的协议；若不同意，可终止使用平台服务。</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. 账号注册与管理 -->
-      <div class="agreement-section">
-        <div class="section-title">2. 账号注册与管理</div>
-        <div class="section-content">
-          <div class="section-item">
-            <div class="item-number">2.1</div>
-            <div class="item-text">注册资格</div>
-            <div class="item-list">
-              <div class="list-item">2.1.1 普通用户：应为具有完全民事行为能力的自然人，通过手机号+验证码登录完成注册。</div>
-              <div class="list-item">2.1.2 门店用户：应为依法设立的个体工商户或企业法人，提交营业执照、负责人身份证明等真实有效资质材料，经平台审核通过后完成注册。</div>
-              <div class="list-item">2.1.3 代理用户：应为依法设立的企业法人或其他组织，提交营业执照、区域授权证明等真实有效资质材料，经平台审核通过并明确负责区域后完成注册。</div>
-            </div>
-          </div>
-          <div class="section-item">
-            <div class="item-number">2.2</div>
-            <div class="item-text">账号责任</div>
-            <div class="item-list">
-              <div class="list-item">2.2.1 用户应妥善保管账号及密码，对账号下的所有操作行为承担法律责任。若账号被盗用，应立即通知平台冻结账号，平台将协助核查处理，但不承担账号被盗用导致的直接或间接损失。</div>
-              <div class="list-item">2.2.2 用户不得出租、出借、转让账号，否则应承担由此产生的全部法律责任，平台有权视情节冻结或注销账号。</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. 核心业务规则 -->
-      <div class="agreement-section">
-        <div class="section-title">3. 核心业务规则</div>
-        <div class="section-content">
-          <div class="section-item">
-            <div class="item-number">3.1</div>
-            <div class="item-text">会员积分规则</div>
-            <div class="item-list">
-              <div class="list-item">3.1.1 定义：会员积分是平台向用户发放的内部增值凭证，仅用于平台内商品购买或文创纪念品兑换，不具有货币属性，不得转让、提现或用于其他非平台指定用途，其相关权益由平台解释。</div>
-              <div class="list-item">3.1.2 获取方式：用户通过支付宝、微信直接支付购物时，按1:1比例获得积分；平台可根据运营活动向注册用户、活动参与者赠送积分，具体规则以活动公告为准。</div>
-              <div class="list-item">3.1.3 使用规则：积分可单独支付购物，使用积分消费不触发推荐人、门店及代理的分享补贴分配；积分默认有效期365天，过期后将清0。将提前7天通过站内信通知。</div>
-            </div>
-          </div>
-          <div class="section-item">
-            <div class="item-number">3.2</div>
-            <div class="item-text">分享补贴规则</div>
-            <div class="item-list">
-              <div class="list-item">3.2.1 定义：分享补贴是平台根据用户消费、推荐行为及门店/代理运营成果发放的可提现权益凭证，仅门店用户、代理用户及完成推荐的普通用户可获取。</div>
-              <div class="list-item">3.2.2 获取条件：</div>
-              <div class="list-item">• 用户消费触发：普通用户现金支付购物时，对应门店按消费金额[5]%、对应代理按[3]%获得补贴；</div>
-              <div class="list-item">• 推荐触发：普通用户通过专属链接/二维码推荐新用户现金消费的，推荐人按消费金额[10]%获得补贴；门店通过专属链接推荐新用户现金消费的，门店按[5]%、对应代理按[3]%获得补贴；</div>
-              <div class="list-item">• 补贴仅针对直接推荐行为，无间接推荐收益，推荐关系自被推荐人首次注册消费后永久有效且不可变更。</div>
-              <div class="list-item">3.2.3 提现规则：补贴按1:1比例提现，单笔最低100元，最高[10000]元，手续费10%，到账时间为T+1工作日；补贴需经7天待入账期（自商品收货之日起算），到期后自动转为可提现状态。</div>
-            </div>
-          </div>
-          <div class="section-item">
-            <div class="item-number">3.3</div>
-            <div class="item-text">交易与兑换规则</div>
-            <div class="item-list">
-              <div class="list-item">3.3.1 用户购物时应仔细核对订单信息，提交订单并完成支付后，视为与平台建立买卖合同关系，平台将按订单信息发货。</div>
-              <div class="list-item">3.3.2 会员积分兑换文创纪念品的，用户确认兑换即扣除相应积分，兑换后不支持撤销或退回积分。</div>
-              <div class="list-item">3.3.3 平台商品价格、库存等信息可能调整，以结算时页面显示为准，若因系统故障或不可抗力导致价格错误，平台有权撤销订单并退还已付款项。</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4. 各方权利义务 -->
-      <div class="agreement-section">
-        <div class="section-title">4. 各方权利义务</div>
-        <div class="section-content">
-          <div class="section-item">
-            <div class="item-number">4.1</div>
-            <div class="item-text">用户权利义务</div>
-            <div class="item-list">
-              <div class="list-item">4.1.1 权利：享受平台提供的购物、积分兑换、推荐收益等服务；查询账号资产明细、订单记录；对个人信息行使查询、更正、删除等权利。</div>
-              <div class="list-item">4.1.2 义务：提供真实、准确的注册信息；遵守法律法规及平台规则，不得从事欺诈、盗刷、传销等违法违规行为；不得发布虚假信息或侵犯他人知识产权的内容。</div>
-            </div>
-          </div>
-          <div class="section-item">
-            <div class="item-number">4.2</div>
-            <div class="item-text">门店/代理额外义务</div>
-            <div class="item-list">
-              <div class="list-item">4.2.1 门店应妥善维护平台形象，规范推广专属链接，不得误导消费者；代理应履行区域运营职责，监督下属门店合规经营。</div>
-              <div class="list-item">4.2.2 门店/代理应及时更新资质信息，确保资质有效；提现时需提交实名认证材料及合法收款账户，若提供虚假信息，平台有权冻结补贴并终止合作。</div>
-            </div>
-          </div>
-          <div class="section-item">
-            <div class="item-number">4.3</div>
-            <div class="item-text">平台权利义务</div>
-            <div class="item-list">
-              <div class="list-item">4.3.1 权利：审核用户注册资质；制定并调整积分、补贴规则（需提前公示）；对违规账号采取冻结、注销等管理措施；监督交易行为，处理违规交易。</div>
-              <div class="list-item">4.3.2 义务：保障平台系统稳定运行；提供商品信息查询、订单跟踪、客服咨询等服务；保护用户个人信息安全；按规则精准结算积分与补贴。</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5. 违约责任 -->
-      <div class="agreement-section">
-        <div class="section-title">5. 违约责任</div>
-        <div class="section-content">
-          <div class="section-item">
-            <div class="item-number">5.1</div>
-            <div class="item-text">用户违反本协议约定（如提供虚假信息、盗用账号、违规提现等），平台有权暂停提供服务、冻结账号资产，由此造成的损失由用户自行承担；情节严重的，平台有权终止协议并追究法律责任。</div>
-          </div>
-          <div class="section-item">
-            <div class="item-number">5.2</div>
-            <div class="item-text">平台违反本协议约定（如未按规则发放积分/补贴、泄露用户个人信息等），应承担相应赔偿责任，但因不可抗力、用户自身过错或第三方原因导致的违约除外。</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 6. 争议解决与其他 -->
-      <div class="agreement-section">
-        <div class="section-title">6. 争议解决与其他</div>
-        <div class="section-content">
-          <div class="section-item">
-            <div class="item-number">6.1</div>
-            <div class="item-text">因本协议产生的争议，双方应协商解决；协商不成的，提交平台所在地有管辖权的人民法院诉讼解决。</div>
-          </div>
-          <div class="section-item">
-            <div class="item-number">6.2</div>
-            <div class="item-text">本协议未尽事宜，适用《民法典》《电子商务法》等相关法律法规规定；平台发布的规则、公告等为本协议补充内容，与本协议具有同等效力。</div>
-          </div>
-        </div>
-      </div>
+  <div class="legal-page">
+    <div class="legal-navbar">
+      <Navbar title="服务协议" left="left" color="#111" />
+    </div>
+    <div class="legal-scroll">
+      <div class="legal-doc Section0"><h1><b><span style="mso-spacerun:'yes';font-family:宋体;mso-ascii-font-family:Calibri;
+mso-hansi-font-family:Calibri;mso-bidi-font-family:'Times New Roman';color:rgb(54,96,145);
+font-weight:bold;font-size:14.0000pt;" ><font face="宋体" >特有料</font></span></b><b><span style="mso-spacerun:'yes';font-family:Calibri;mso-fareast-font-family:'MS Gothic';
+mso-bidi-font-family:'Times New Roman';color:rgb(54,96,145);font-weight:bold;
+font-size:14.0000pt;" ><font face="MS Gothic" >平台相关协议</font></span></b><b><span style="mso-spacerun:'yes';font-family:Calibri;mso-fareast-font-family:'MS Gothic';
+mso-bidi-font-family:'Times New Roman';color:rgb(54,96,145);font-weight:bold;
+font-size:14.0000pt;" ><o:p></o:p></span></b></h1><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >特别注意</font>1<font face="ＭＳ 明朝" >：</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >尊敬的用户：</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >您即将通过本页面确认使用以外的第三方卖家为您提供的商品和相关服务需注意的相关事项。在接受本须知内容之前，请您仔细阅读本须知的全部内容。如果您对本须知的条款有疑问的，请通过客服渠道进行询问。如果您不同意本须知的任意内容，请不要进行后续操作。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >使用须知（简称</font><font face="Cambria" >“</font><font face="ＭＳ 明朝" >本须知</font><font face="Cambria" >”</font><font face="ＭＳ 明朝" >）是用户（以下简称</font><font face="Cambria" >“</font><font face="ＭＳ 明朝" >用户</font><font face="Cambria" >”</font><font face="ＭＳ 明朝" >或</font><font face="Cambria" >“</font><font face="ＭＳ 明朝" >您</font><font face="Cambria" >”</font><font face="ＭＳ 明朝" >）就使用基于商家（以下简称</font><font face="Cambria" >“</font><font face="ＭＳ 明朝" >卖家</font><font face="Cambria" >”</font><font face="ＭＳ 明朝" >）提供相关商品或服务所签署的有效文件。用户通过网络页面点击确认或以其他方式选择接受本须知，即表示您同意接受以下全部内容：</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >1. <font face="ＭＳ 明朝" >您在本网站（和</font><font face="Cambria" >APP</font><font face="ＭＳ 明朝" >）中与卖家产生的所有交易，均在第三方平台内进行，对于交易过程中的资金及个人信息安全问题，均由第三方平台负责，本网站（和</font><font face="Cambria" >APP</font><font face="ＭＳ 明朝" >）不承担任何责任。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >2. <font face="ＭＳ 明朝" >卖家提供的产品和服务由卖家独立负责。交易中出现质量或服务问题，可按平台流程维权，本网站不承担责任。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >3. <font face="ＭＳ 明朝" >本网站将定期检查卖家商品宣传，但无法保证实时检查，请用户自行判断。本网站不对卖家信息真实性、合法性负责。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >4. <font face="ＭＳ 明朝" >请警惕网络欺诈，不要向任何人透露账号、密码等信息。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >5. <font face="ＭＳ 明朝" >本网站仅提供商品链接，不对卖家商品或服务作任何担保。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >6. <font face="ＭＳ 明朝" >用户自行上传或收集的资源，仅供展示交流，本网站不承担任何责任。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >7. <font face="ＭＳ 明朝" >如权利人认为内容侵权，可提交权利通知，本网站将依法处理。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >8. <font face="ＭＳ 明朝" >如发现侵权或诈骗行为，可联系</font></span><span style="mso-spacerun:'yes';font-family:宋体;mso-ascii-font-family:Cambria;
+mso-hansi-font-family:Cambria;mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="宋体" >特有料</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >协助维权。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >特别注意</font>2<font face="ＭＳ 明朝" >：</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >本网站（和</font>APP<font face="ＭＳ 明朝" >）信息均由商家提供，仅供参考，本网站不承担任何直接或间接责任。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >凡使用本网站（和</font>APP<font face="ＭＳ 明朝" >）即视为接受本声明约束。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="Cambria" >———</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:宋体;mso-ascii-font-family:Cambria;
+mso-hansi-font-family:Cambria;mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="宋体" >特有料</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >用户充值协议</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >您在注册、登录、使用</font></span><span style="mso-spacerun:'yes';font-family:宋体;mso-ascii-font-family:Cambria;
+mso-hansi-font-family:Cambria;mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="宋体" >特有料</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >购买服务前，应认真阅读并理解本协议。使用即视为接受全部条款。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >一、购买服务程序</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >1. <font face="ＭＳ 明朝" >充值：充值金额由第三方支付机构监管。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >2. <font face="ＭＳ 明朝" >直接购买：通过</font></span><span style="mso-spacerun:'yes';font-family:宋体;mso-ascii-font-family:Cambria;
+mso-hansi-font-family:Cambria;mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="宋体" >特有料</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >认可方式购买服务。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >二、充值及购买规则</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >1. <font face="ＭＳ 明朝" >用户须合法使用账号。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >2. <font face="ＭＳ 明朝" >余额支持退款，原路返回。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >3. <font face="ＭＳ 明朝" >购买成功后一般不退款。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" >4. <font face="ＭＳ 明朝" >服务仅限本人使用，不可转让。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >三、权利声明</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >因用户自身原因造成损失，平台不承担责任。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >四、处罚规则</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >违规行为将被暂停服务、封禁账号或冻结余额。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >五、法律</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >争议提交中国国际经济贸易仲裁委员会仲裁。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >六、服务中止</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >平台可依法调整或终止服务。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p><p class=MsoNormal ><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >七、附则</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><font face="ＭＳ 明朝" >条款部分无效不影响其他条款效力。</font></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><br style='mso-special-character:line-break'></span><span style="mso-spacerun:'yes';font-family:Cambria;mso-fareast-font-family:'ＭＳ 明朝';
+mso-bidi-font-family:'Times New Roman';font-size:11.0000pt;" ><o:p></o:p></span></p></div>
     </div>
   </div>
 </template>
@@ -163,6 +100,81 @@ import Navbar from '@/components/Navbar.vue'
 </script>
 
 <style scoped lang="scss">
-@import './agreement.scss';
-</style>
+.legal-page {
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #ffd4c4 0%, #fff5f2 28%, #f0f2f5 100%);
+  display: flex;
+  flex-direction: column;
+}
 
+.legal-navbar {
+  flex-shrink: 0;
+  background: rgba(255, 253, 252, 0.94);
+  backdrop-filter: blur(10px);
+}
+
+.legal-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+}
+
+.legal-doc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #333;
+  word-break: break-word;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  max-width: 720px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
+}
+
+.legal-doc :deep(p) {
+  margin: 0 0 12px;
+  text-align: justify;
+  text-justify: inter-ideograph;
+}
+
+.legal-doc :deep(p:last-child) {
+  margin-bottom: 0;
+}
+
+.legal-doc :deep(h1) {
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 18px;
+  font-weight: 600;
+  color: #c73e1d;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.legal-doc :deep(h1 b),
+.legal-doc :deep(h1 span),
+.legal-doc :deep(h1 font) {
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
+.legal-doc :deep(span),
+.legal-doc :deep(font) {
+  font-family: inherit !important;
+  font-size: inherit !important;
+}
+
+.legal-doc :deep(o\:p) {
+  display: none;
+}
+</style>
