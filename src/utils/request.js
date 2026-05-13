@@ -27,6 +27,7 @@ service.interceptors.request.use(
     // 在发送请求之前做些什么
     // 使用 Pinia store 获取 token
     const userStore = useUserStore()
+    userStore.initFromStorage()
     const token = userStore.getToken
     // const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3eiIsImlzcyI6InFpbmdxdWV3YW5nbHVvIiwiZXhwIjoxNzcxMTQ5Nzk0LCJ1c2VyIjoiblR6YVRYUUdjdlpPNHl2Q2grUjRHMkFWck1WZTB4WVNwMktmNTYwaFJ2N2l2NndDWE5JTXJCd0NYaHJMNFI0bml5RldpTWdkOVEwcCt3K1BKWG9GeGJyN0JRc1VhemlzNGNqd2FzenE0ZTA9IiwiaWF0IjoxNzY4NDcxMzk0fQ.dDzdv6WNlreTi-rOha2RjoZGCqMrYOdH4rUdOCrB7mY';
     if (token) {

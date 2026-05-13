@@ -9,6 +9,7 @@ import { showToast } from '@nutui/nutui'
 import { exchangeCrossDomainTicket } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import { savePromotionParams, savePromotionParamsFromUrl } from '@/utils/promotionParams'
+import { normalizeInternalRedirectPath } from '@/utils/threeStepRedirect'
 
 const route = useRoute()
 const router = useRouter()
@@ -27,11 +28,7 @@ function savePromotionFromRedirect(rawRedirect) {
 }
 
 function normalizeRedirect(rawRedirect) {
-  const value = rawRedirect ? String(rawRedirect) : ''
-  if (value && value.startsWith('/') && !value.startsWith('//') && value !== '/login') {
-    return value
-  }
-  return '/lqindex'
+  return normalizeInternalRedirectPath(rawRedirect, import.meta.env.BASE_URL || '/webh5/')
 }
 
 onMounted(async () => {

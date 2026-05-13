@@ -63,9 +63,9 @@ function initApp() {
   
   app.use(pinia)
   
-  // 初始化用户信息（从 localStorage 恢复）
+  // 初始化登录态（从 localStorage 恢复）
   const userStore = useUserStore()
-  userStore.initUserInfo()
+  userStore.initFromStorage()
   
   // 首次进入 & 每次路由切换后都尝试隐藏微信底部工具栏
   tryHideWeChatToolbar()

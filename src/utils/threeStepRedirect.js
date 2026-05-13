@@ -89,9 +89,12 @@ export function buildTicketCallbackUrl({
   return url.toString()
 }
 
-export function sanitizeExternalRedirectPath(redirectUrl) {
+export function sanitizeExternalRedirectPath(redirectUrl, basePath = DEFAULT_BASE_PATH) {
   const url = new URL(redirectUrl)
-  const pathname = url.pathname.replace(/^\/webh5/, '') || '/'
+  const normalizedBase = normalizeBasePath(basePath).replace(/\/$/, '')
+  const pathname = normalizedBase && normalizedBase !== '/' && url.pathname.startsWith(`${normalizedBase}/`)
+    ? url.pathname.slice(normalizedBase.length) || '/'
+    : url.pathname
   return `${pathname}${url.search}`
 }
 
@@ -106,8 +109,47 @@ export function buildLoggedInExternalCallbackUrl({
     mainOrigin: mainOrigin || targetUrl.origin,
     basePath,
     ticket,
-    redirectPath: sanitizeExternalRedirectPath(redirectUrl)
+    redirectPath: sanitizeExternalRedirectPath(redirectUrl, basePath)
   })
+}
+
+export function normalizeInternalRedirectPath(rawRedirect, basePath = DEFAULT_BASE_PATH, fallback = '/lqindex') {
+  const value = Array.isArray(rawRedirect)
+    ? String(rawRedirect[0] || '')
+    : String(rawRedirect || '')
+
+  if (!value || value.startsWith('//') || /^[a-zA-Z][a-zA-Z\d+.-]*:/.test(value)) {
+    return fallback
+  }
+
+  const [pathAndSearch, hash = ''] = value.split('#')
+  const [pathname = '', search = ''] = pathAndSearch.split('?')
+  const normalizedBase = normalizeBasePath(basePath).replace(/\/$/, '')
+  const normalizedPath = normalizedBase && normalizedBase !== '/' && pathname.startsWith(`${normalizedBase}/`)
+    ? pathname.slice(normalizedBase.length) || '/'
+    : pathname
+
+  if (!normalizedPath.startsWith('/') || normalizedPath === '/login') {
+    return fallback
+  }
+
+  return `${normalizedPath}${search ? `?${search}` : ''}${hash ? `#${hash}` : ''}`
+}
+
+export function normalizeInternalRedirectLocation(rawRedirect, basePath = DEFAULT_BASE_PATH, fallback = '/lqindex') {
+  const normalized = normalizeInternalRedirectPath(rawRedirect, basePath, fallback)
+  const [pathAndSearch, hash = ''] = normalized.split('#')
+  const [path = fallback, search = ''] = pathAndSearch.split('?')
+  const query = {}
+  new URLSearchParams(search).forEach((value, key) => {
+    query[key] = value
+  })
+
+  return {
+    path,
+    ...(Object.keys(query).length ? { query } : {}),
+    ...(hash ? { hash: `#${hash}` } : {})
+  }
 }
 
 export function getAllowedRedirectOrigins() {

@@ -38,7 +38,8 @@ import {
   buildLoggedInExternalCallbackUrl,
   buildLoginCallbackUrl,
   getThreeStepMainOrigin,
-  isAllowedExternalRedirect
+  isAllowedExternalRedirect,
+  normalizeInternalRedirectPath
 } from '@/utils/threeStepRedirect'
 import {
   getSavedPromotionParams,
@@ -109,6 +110,7 @@ function buildPromotionRedirectUrl() {
 }
 
 async function redirectLoggedInUserToExternalTarget(redirectPath) {
+  userStore.initFromStorage()
   const ticketRes = await createCrossDomainTicket()
   if (ticketRes?.code !== 0 || !ticketRes?.data) {
     throw new Error(ticketRes?.msg || ticketRes?.message || '跨域登录票据创建失败')
@@ -121,6 +123,23 @@ async function redirectLoggedInUserToExternalTarget(redirectPath) {
   })
   sessionStorage.removeItem(REDIRECT_CACHE_KEY)
   window.location.replace(callbackUrl)
+}
+
+async function redirectLoggedInUser(redirectPath) {
+  userStore.initFromStorage()
+  if (!userStore.getToken) return false
+
+  if (redirectPath && isAllowedExternalRedirect(redirectPath)) {
+    await redirectLoggedInUserToExternalTarget(redirectPath)
+    return true
+  }
+
+  const normalizedRedirect = normalizeInternalRedirectPath(
+    redirectPath,
+    import.meta.env.BASE_URL || '/webh5/'
+  )
+  router.replace(normalizedRedirect)
+  return true
 }
 
 async function doWeChatLogin(code) {
@@ -153,7 +172,6 @@ async function doWeChatLogin(code) {
 
     // 登录成功后：优先跳回登录前要去的页面；否则去首页
     // 注意：不要把 BASE_URL/basePath 拼进路由跳转里（router 已经通过 createWebHistory(base) 处理过），否则会命中 404
-    const basePrefix = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '') // 例如 '/webh5'
     const rawRedirect =
       getQueryStringValue('redirect') ||
       (sessionStorage.getItem(REDIRECT_CACHE_KEY) || '') ||
@@ -166,17 +184,8 @@ async function doWeChatLogin(code) {
       return
     }
 
-    // 仅允许站内相对路径，避免 open redirect
-    if (redirectPath && redirectPath.startsWith('/')) {
-      // 兼容外部错误拼出来的 '/webh5/home' 这种带 base 的路径
-      if (basePrefix && basePrefix !== '/' && redirectPath.startsWith(`${basePrefix}/`)) {
-        redirectPath = redirectPath.slice(basePrefix.length) || '/'
-      }
-    } else {
-      redirectPath = ''
-    }
-
-    router.replace(redirectPath || '/lqindex')
+    redirectPath = normalizeInternalRedirectPath(redirectPath, import.meta.env.BASE_URL || '/webh5/')
+    router.replace(redirectPath)
     // 清理缓存，避免下次误用
     sessionStorage.removeItem(REDIRECT_CACHE_KEY)
   } finally {
@@ -235,6 +244,7 @@ function handleWeChatLogin() {
 }
 
 onMounted(() => {
+  userStore.initFromStorage()
   savePromotionParams({
     merchantId: getQueryStringValue('merchantId'),
     userId: getQueryStringValue('userId')
@@ -251,10 +261,10 @@ onMounted(() => {
   console.log('login cached redirect:', sessionStorage.getItem(REDIRECT_CACHE_KEY) || '')
   const redirectPath = getQueryStringValue('redirect') || buildPromotionRedirectUrl()
   console.log('login parsed redirect:', redirectPath)
-  if (!code && userStore.getToken && redirectPath && isAllowedExternalRedirect(redirectPath)) {
-    redirectLoggedInUserToExternalTarget(redirectPath).catch((err) => {
-      console.error('已登录跨域跳转失败：', err)
-      showToast.fail(err?.message || '跨域跳转失败')
+  if (!code && userStore.getToken) {
+    redirectLoggedInUser(redirectPath).catch((err) => {
+      console.error('已登录跳转失败：', err)
+      showToast.fail(err?.message || '跳转失败')
     })
     return
   }

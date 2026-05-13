@@ -10,7 +10,7 @@ import { constantRouterMap } from './router.config.js'
 import { useUserStore } from '@/stores/user'
 import { getSavedHomeRouteParams, saveHomeRouteParams } from '@/utils/homeRouteParams'
 import { savePromotionParams } from '@/utils/promotionParams'
-import { isAllowedExternalRedirect } from '@/utils/threeStepRedirect'
+import { isAllowedExternalRedirect, normalizeInternalRedirectLocation } from '@/utils/threeStepRedirect'
 
 // const originalPush = Router.prototype.push
 // Router.prototype.push = function push(location, onResolve, onReject) {
@@ -48,6 +48,7 @@ const router = createRouter( {
 // 路由守卫：检查登录状态
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
+  userStore.initFromStorage()
   const token = userStore.getToken
   savePromotionParams(to.query)
   
@@ -68,12 +69,10 @@ router.beforeEach((to, from, next) => {
       return
     }
 
-    const redirectPath =
-      rawRedirect && rawRedirect.startsWith('/') && rawRedirect !== '/login'
-        ? rawRedirect
-        : '/lqindex'
-
-    next({ path: redirectPath, replace: true })
+    next({
+      ...normalizeInternalRedirectLocation(rawRedirect, import.meta.env.BASE_URL || '/webh5/'),
+      replace: true
+    })
     return
   }
   
