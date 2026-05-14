@@ -83,6 +83,13 @@ export const constantRouterMap = [
     hidden: true,
     meta: { title: '跳转中', requiresAuth: false, keepAlive: false, scrollTop: 0 }
   },
+  {
+    path: '/auth-check',
+    name: 'AuthCheck',
+    component: () => import('@/views/auth-check/index'),
+    hidden: true,
+    meta: { title: '登录状态检查', requiresAuth: false, keepAlive: false, scrollTop: 0 }
+  },
   // {
   //   path: '/auth-callback',
   //   redirect: (to) => ({ path: '/sso-callback', query: to.query, hash: to.hash }),

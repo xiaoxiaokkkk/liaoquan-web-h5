@@ -14,6 +14,10 @@ function redirectToLoginWithReturn() {
   })
 }
 
+function shouldSkipUnauthorizedLogout(config) {
+  return Boolean(config?.skipUnauthorizedLogout)
+}
+
 // 创建一个 Axios 实例
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_URL_PREFIX || '/chatserver', // 从环境变量读取基础API地址，便于不同环境切换
@@ -64,6 +68,9 @@ service.interceptors.response.use(
   (response) => {
     // 处理业务状态码为 401 的情况
     if (response.data.code === 401) {
+      if (shouldSkipUnauthorizedLogout(response.config)) {
+        return response.data
+      }
       console.error('未授权，请重新登录')
       const userStore = useUserStore()
       userStore.logout()
@@ -81,6 +88,9 @@ service.interceptors.response.use(
       switch (error.response.status) {
         case 401:
         case 403:
+          if (shouldSkipUnauthorizedLogout(error.config)) {
+            break
+          }
           console.error('登录过期或未授权，请重新登录')
           userStore.logout()
           redirectToLoginWithReturn()

@@ -43,6 +43,25 @@ export function buildMainTargetUrl(query, mainOrigin, basePath = DEFAULT_BASE_PA
     : buildMainEnterUrl(query, mainOrigin, basePath)
 }
 
+export function buildMainAuthCheckUrl({ mainOrigin, basePath = DEFAULT_BASE_PATH, redirectUrl, query = {} }) {
+  const origin = normalizeOrigin(mainOrigin)
+  if (!origin) {
+    throw new Error('mainOrigin is required')
+  }
+  if (!redirectUrl) {
+    throw new Error('redirectUrl is required')
+  }
+  const url = new URL(`${normalizeBasePath(basePath)}auth-check`, origin)
+  url.searchParams.set('redirect', redirectUrl)
+  ;['merchantId', 'userId', 'contentId'].forEach((key) => {
+    const value = query?.[key]
+    if (value !== undefined && value !== null) {
+      url.searchParams.set(key, Array.isArray(value) ? String(value[0] || '') : String(value))
+    }
+  })
+  return url.toString()
+}
+
 export function buildAuthLoginUrl({ authOrigin, basePath = DEFAULT_BASE_PATH, redirectUrl }) {
   const origin = normalizeOrigin(authOrigin)
   if (!origin) {

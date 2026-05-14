@@ -27,7 +27,9 @@ export const wechatLogin = (data) => {
 };
 
 export const createCrossDomainTicket = () => {
-  return post("/api/user/auth/ticket/create", {})
+  return post("/api/user/auth/ticket/create", {}, {
+    skipUnauthorizedLogout: true
+  })
 };
 
 export const exchangeCrossDomainTicket = (data) => {
@@ -39,6 +41,7 @@ export const exchangeCrossDomainTicket = (data) => {
   })
 
   return post("/api/user/auth/ticket/exchange", formData, {
+    skipUnauthorizedLogout: true,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
