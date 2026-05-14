@@ -87,11 +87,26 @@ export function buildLoginCallbackUrl({ origin, basePath = DEFAULT_BASE_PATH, re
   return url.toString()
 }
 
+export function createSsoCallbackNonce() {
+  const bytes = new Uint8Array(8)
+  if (globalThis.crypto?.getRandomValues) {
+    globalThis.crypto.getRandomValues(bytes)
+    return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('')
+  }
+  return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`
+}
+
+export function normalizeSsoCallbackNonce(nonce) {
+  const value = String(nonce || '').replace(/[^a-zA-Z0-9_-]/g, '')
+  return value || createSsoCallbackNonce()
+}
+
 export function buildTicketCallbackUrl({
   mainOrigin,
   basePath = DEFAULT_BASE_PATH,
   ticket,
-  redirectPath
+  redirectPath,
+  nonce
 }) {
   const origin = normalizeOrigin(mainOrigin)
   if (!origin) {
@@ -100,7 +115,7 @@ export function buildTicketCallbackUrl({
   if (!ticket) {
     throw new Error('ticket is required')
   }
-  const url = new URL(`${normalizeBasePath(basePath)}sso-callback`, origin)
+  const url = new URL(`${normalizeBasePath(basePath)}sso-callback/${normalizeSsoCallbackNonce(nonce)}`, origin)
   url.searchParams.set('ticket', ticket)
   if (redirectPath) {
     url.searchParams.set('redirect', redirectPath)
@@ -121,14 +136,16 @@ export function buildLoggedInExternalCallbackUrl({
   redirectUrl,
   ticket,
   mainOrigin,
-  basePath = DEFAULT_BASE_PATH
+  basePath = DEFAULT_BASE_PATH,
+  nonce
 }) {
   const targetUrl = new URL(redirectUrl)
   return buildTicketCallbackUrl({
     mainOrigin: mainOrigin || targetUrl.origin,
     basePath,
     ticket,
-    redirectPath: sanitizeExternalRedirectPath(redirectUrl, basePath)
+    redirectPath: sanitizeExternalRedirectPath(redirectUrl, basePath),
+    nonce
   })
 }
 

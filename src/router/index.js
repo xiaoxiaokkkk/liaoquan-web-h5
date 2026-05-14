@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
   savePromotionParams(to.query)
   
   // 定义不需要登录的页面白名单
-  const whiteList = ['/login', '/error', '/downloadapp', '/mine', '/enter', '/bridge', '/qiaoliao', '/sso-callback', '/auth-callback', '/agreement', '/privacyPolicy']
+  const whiteList = ['/login', '/error', '/downloadapp', '/mine', '/enter', '/bridge', '/qiaoliao', '/auth-callback', '/agreement', '/privacyPolicy']
 
   // 已登录：即使进入 login，也不允许停留在登录页，直接跳回目标页（或首页）
   if (to.path === '/login' && token) {
@@ -80,7 +80,7 @@ router.beforeEach((to, from, next) => {
   const requiresAuth = to.meta.requiresAuth !== false
   
   // 如果路由在白名单中，直接放行
-  if (whiteList.includes(to.path)) {
+  if (whiteList.includes(to.path) || to.meta.requiresAuth === false) {
     next()
     return
   }

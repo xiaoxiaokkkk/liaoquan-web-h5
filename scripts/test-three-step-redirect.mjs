@@ -16,7 +16,7 @@ const query = {
 
 assert.equal(
   buildMainEnterUrl(query, 'http://t.hainanjunfeng.com', '/webh5/'),
-  'http://t.hainanjunfeng.com/webh5/enter?merchantId=288948594&from=enter-page&empty='
+  'http://t.hainanjunfeng.com/webh5/jhhome?merchantId=288948594&from=enter-page&empty='
 )
 
 assert.equal(
@@ -33,9 +33,10 @@ assert.equal(
     mainOrigin: 'http://t.hainanjunfeng.com',
     basePath: '/webh5/',
     ticket: 'abc123',
-    redirectPath: '/enter?merchantId=288948594'
+    redirectPath: '/enter?merchantId=288948594',
+    nonce: 'nonce123'
   }),
-  'http://t.hainanjunfeng.com/webh5/sso-callback?ticket=abc123&redirect=%2Fenter%3FmerchantId%3D288948594'
+  'http://t.hainanjunfeng.com/webh5/sso-callback/nonce123?ticket=abc123&redirect=%2Fenter%3FmerchantId%3D288948594'
 )
 
 assert.equal(

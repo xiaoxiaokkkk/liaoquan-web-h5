@@ -20,9 +20,10 @@ assert.equal(
     redirectUrl: 'http://t.hainanjunfeng.com/webh5/enter?merchantId=979301752',
     ticket: 'ticket-1',
     mainOrigin: 'http://t.hainanjunfeng.com',
-    basePath: '/webh5/'
+    basePath: '/webh5/',
+    nonce: 'nonce123'
   }),
-  'http://t.hainanjunfeng.com/webh5/sso-callback?ticket=ticket-1&redirect=%2Fenter%3FmerchantId%3D979301752'
+  'http://t.hainanjunfeng.com/webh5/sso-callback/nonce123?ticket=ticket-1&redirect=%2Fenter%3FmerchantId%3D979301752'
 )
 
 console.log('logged-in redirect tests passed')

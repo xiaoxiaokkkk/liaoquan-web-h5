@@ -92,11 +92,11 @@ export const constantRouterMap = [
   },
   // {
   //   path: '/auth-callback',
-  //   redirect: (to) => ({ path: '/sso-callback', query: to.query, hash: to.hash }),
+  //   redirect: (to) => ({ path: '/sso-callback/legacy', query: to.query, hash: to.hash }),
   //   hidden: true
   // },
   {
-    path: '/sso-callback',
+    path: '/sso-callback/:nonce',
     name: 'SsoCallback',
     component: () => import('@/views/sso-callback/index'),
     hidden: true,

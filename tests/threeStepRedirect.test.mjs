@@ -29,10 +29,11 @@ const callbackUrl = new URL(buildLoggedInExternalCallbackUrl({
   redirectUrl: 'http://ls.hainanjunfeng.com/webh5/jhhome?merchantId=10001&userId=20001',
   ticket: 'ticket123',
   mainOrigin,
-  basePath
+  basePath,
+  nonce: 'nonce123'
 }))
 assert.equal(callbackUrl.origin, mainOrigin)
-assert.equal(callbackUrl.pathname, '/webh5/sso-callback')
+assert.equal(callbackUrl.pathname, '/webh5/sso-callback/nonce123')
 assert.equal(callbackUrl.searchParams.get('ticket'), 'ticket123')
 assert.equal(callbackUrl.searchParams.get('redirect'), '/jhhome?merchantId=10001&userId=20001')
 
