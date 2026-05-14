@@ -29,7 +29,7 @@ const props = defineProps( {
 
 const route = useRoute()
 const router = useRouter()
-const activeName = ref('LqIndex');
+const activeName = ref('Jhhome');
 
 // 根据当前路由设置激活的 tab
 const updateActiveTab = () => {
@@ -62,8 +62,8 @@ watch(
     // 用 resolve 统一成 fullPath，避免重复跳转造成循环
     let targetLocation = matchedTab.to
 
-    // 切回首页（Home/LqIndex）时：把首次进入首页的 query（merchantId/userId/tab 等）带回去，避免 tabbar 切换丢参
-    if (matchedTab.name === 'Home' || matchedTab.name === 'LqIndex') {
+    // 切回首页（Home/Jhhome）时：把首次进入首页的 query（merchantId/userId/tab 等）带回去，避免 tabbar 切换丢参
+    if (matchedTab.name === 'Home' || matchedTab.name === 'Jhhome') {
       const saved = getSavedHomeRouteParams()
       if (saved && Object.keys(saved).length > 0) {
         if (typeof targetLocation === 'string') {

@@ -7,7 +7,7 @@ export const constantRouterMap = [
     path: '/',
     name: 'Layout',
     component: () => import('@/views/layouts/index'),
-    redirect: '/lqindex',
+    redirect: '/jhhome',
     // 关键：缓存 Layout，避免从 /home 跳到 /contentDetail 时 Layout 被卸载，
     // 从而导致其内部 keep-alive 缓存（Home/ContentList）丢失、滚动回到顶部
     meta: { keepAlive: true },
@@ -19,8 +19,8 @@ export const constantRouterMap = [
       //   meta: { title: '首页', keepAlive: true, scrollTop: 0 }
       // },
       {
-        path: '/lqindex',
-        name: 'LqIndex',
+        path: '/jhhome',
+        name: 'Jhhome',
         component: () => import('@/views/index/index'),
         meta: { title: '首页', keepAlive: true, scrollTop: 0 }
       },
@@ -61,7 +61,7 @@ export const constantRouterMap = [
   {
     path: '/enter',
     name: 'Enter',
-    redirect: (to) => ({ path: '/lqindex', query: to.query, hash: to.hash }),
+    redirect: (to) => ({ path: '/jhhome', query: to.query, hash: to.hash }),
     meta: { title: '进入页', requiresAuth: false, keepAlive: true, scrollTop: 0 }
   },
   // {
@@ -72,16 +72,26 @@ export const constantRouterMap = [
   //   meta: { title: '进入页', requiresAuth: false, keepAlive: true, scrollTop: 0 }
   // },
   {
+    path: '/qiaoliao',
+    redirect: (to) => ({ path: '/bridge', query: to.query, hash: to.hash }),
+    hidden: true
+  },
+  {
     path: '/bridge',
     name: 'Bridge',
     component: () => import('@/views/bridge/index'),
     hidden: true,
     meta: { title: '跳转中', requiresAuth: false, keepAlive: false, scrollTop: 0 }
   },
+  // {
+  //   path: '/auth-callback',
+  //   redirect: (to) => ({ path: '/sso-callback', query: to.query, hash: to.hash }),
+  //   hidden: true
+  // },
   {
-    path: '/auth-callback',
-    name: 'AuthCallback',
-    component: () => import('@/views/auth-callback/index'),
+    path: '/sso-callback',
+    name: 'SsoCallback',
+    component: () => import('@/views/sso-callback/index'),
     hidden: true,
     meta: { title: '登录中', requiresAuth: false, keepAlive: false, scrollTop: 0 }
   },
@@ -164,12 +174,18 @@ export const constantRouterMap = [
   {
     path: '/lqi_:legacyPath(.*)',
     name: 'LegacyLqiRoute',
-    redirect: (to) => ({ path: '/lqindex', query: to.query, hash: to.hash })
+    redirect: (to) => ({ path: '/jhhome', query: to.query, hash: to.hash })
   },
   {
     path: '/lq3_:legacyPath(.*)',
     name: 'LegacyLq3Route',
-    redirect: (to) => ({ path: '/lqindex', query: to.query, hash: to.hash })
+    redirect: (to) => ({ path: '/jhhome', query: to.query, hash: to.hash })
+  },
+  // 旧首页路径：外链/收藏夹仍可能指向 /lqindex
+  {
+    path: '/lqindex',
+    redirect: (to) => ({ path: '/jhhome', query: to.query, hash: to.hash }),
+    hidden: true
   },
   // 404路由：匹配所有未定义的路由，必须放在最后
   {

@@ -12,7 +12,7 @@ const basePath = '/webh5/'
 
 assert.equal(
   buildMainTargetUrl({ merchantId: 10001, userId: 20001 }, mainOrigin, basePath),
-  'http://ls.hainanjunfeng.com/webh5/lqindex?merchantId=10001&userId=20001'
+  'http://ls.hainanjunfeng.com/webh5/jhhome?merchantId=10001&userId=20001'
 )
 
 assert.equal(
@@ -21,28 +21,28 @@ assert.equal(
 )
 
 assert.equal(
-  sanitizeExternalRedirectPath('http://ls.hainanjunfeng.com/webh5/lqindex?merchantId=10001&userId=20001', basePath),
-  '/lqindex?merchantId=10001&userId=20001'
+  sanitizeExternalRedirectPath('http://ls.hainanjunfeng.com/webh5/jhhome?merchantId=10001&userId=20001', basePath),
+  '/jhhome?merchantId=10001&userId=20001'
 )
 
 const callbackUrl = new URL(buildLoggedInExternalCallbackUrl({
-  redirectUrl: 'http://ls.hainanjunfeng.com/webh5/lqindex?merchantId=10001&userId=20001',
+  redirectUrl: 'http://ls.hainanjunfeng.com/webh5/jhhome?merchantId=10001&userId=20001',
   ticket: 'ticket123',
   mainOrigin,
   basePath
 }))
 assert.equal(callbackUrl.origin, mainOrigin)
-assert.equal(callbackUrl.pathname, '/webh5/auth-callback')
+assert.equal(callbackUrl.pathname, '/webh5/sso-callback')
 assert.equal(callbackUrl.searchParams.get('ticket'), 'ticket123')
-assert.equal(callbackUrl.searchParams.get('redirect'), '/lqindex?merchantId=10001&userId=20001')
+assert.equal(callbackUrl.searchParams.get('redirect'), '/jhhome?merchantId=10001&userId=20001')
 
-assert.equal(normalizeInternalRedirectPath('/webh5/lqindex?merchantId=10001', basePath), '/lqindex?merchantId=10001')
-assert.equal(normalizeInternalRedirectPath('/lqindex?merchantId=10001', basePath), '/lqindex?merchantId=10001')
-assert.equal(normalizeInternalRedirectPath('/login?redirect=/mine', basePath), '/lqindex')
-assert.equal(normalizeInternalRedirectPath('//evil.example/path', basePath), '/lqindex')
-assert.equal(normalizeInternalRedirectPath('http://evil.example/path', basePath), '/lqindex')
-assert.deepEqual(normalizeInternalRedirectLocation('/webh5/lqindex?merchantId=10001&userId=20001#top', basePath), {
-  path: '/lqindex',
+assert.equal(normalizeInternalRedirectPath('/webh5/jhhome?merchantId=10001', basePath), '/jhhome?merchantId=10001')
+assert.equal(normalizeInternalRedirectPath('/jhhome?merchantId=10001', basePath), '/jhhome?merchantId=10001')
+assert.equal(normalizeInternalRedirectPath('/login?redirect=/mine', basePath), '/jhhome')
+assert.equal(normalizeInternalRedirectPath('//evil.example/path', basePath), '/jhhome')
+assert.equal(normalizeInternalRedirectPath('http://evil.example/path', basePath), '/jhhome')
+assert.deepEqual(normalizeInternalRedirectLocation('/webh5/jhhome?merchantId=10001&userId=20001#top', basePath), {
+  path: '/jhhome',
   query: { merchantId: '10001', userId: '20001' },
   hash: '#top'
 })

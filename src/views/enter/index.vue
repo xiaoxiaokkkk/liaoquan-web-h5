@@ -12,7 +12,7 @@ const router = useRouter()
 
 const handleEnter = () => {
   router.push({
-    path: '/lqindex',
+    path: '/jhhome',
     query: {
       ...route.query,
       from: 'enter-page',

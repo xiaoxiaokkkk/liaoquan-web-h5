@@ -11,8 +11,8 @@ assert.equal(
 )
 
 assert.equal(
-  sanitizeExternalRedirectPath('http://t.hainanjunfeng.com/webh5/lqindex?merchantId=979301752'),
-  '/lqindex?merchantId=979301752'
+  sanitizeExternalRedirectPath('http://t.hainanjunfeng.com/webh5/jhhome?merchantId=979301752'),
+  '/jhhome?merchantId=979301752'
 )
 
 assert.equal(
@@ -22,7 +22,7 @@ assert.equal(
     mainOrigin: 'http://t.hainanjunfeng.com',
     basePath: '/webh5/'
   }),
-  'http://t.hainanjunfeng.com/webh5/auth-callback?ticket=ticket-1&redirect=%2Fenter%3FmerchantId%3D979301752'
+  'http://t.hainanjunfeng.com/webh5/sso-callback?ticket=ticket-1&redirect=%2Fenter%3FmerchantId%3D979301752'
 )
 
 console.log('logged-in redirect tests passed')

@@ -35,7 +35,7 @@ assert.equal(
     ticket: 'abc123',
     redirectPath: '/enter?merchantId=288948594'
   }),
-  'http://t.hainanjunfeng.com/webh5/auth-callback?ticket=abc123&redirect=%2Fenter%3FmerchantId%3D288948594'
+  'http://t.hainanjunfeng.com/webh5/sso-callback?ticket=abc123&redirect=%2Fenter%3FmerchantId%3D288948594'
 )
 
 assert.equal(

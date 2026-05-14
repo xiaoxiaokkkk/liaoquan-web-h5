@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
   savePromotionParams(to.query)
   
   // 定义不需要登录的页面白名单
-  const whiteList = ['/login', '/error', '/downloadapp', '/mine', '/enter', '/bridge', '/auth-callback', '/agreement', '/privacyPolicy']
+  const whiteList = ['/login', '/error', '/downloadapp', '/mine', '/enter', '/bridge', '/qiaoliao', '/sso-callback', '/auth-callback', '/agreement', '/privacyPolicy']
 
   // 已登录：即使进入 login，也不允许停留在登录页，直接跳回目标页（或首页）
   if (to.path === '/login' && token) {
@@ -94,8 +94,8 @@ router.beforeEach((to, from, next) => {
     return
   }
 
-  // 首页参数持久化/兜底：tabbar 切换可能导致 /home 或 /lqindex 不带 query（merchantId 等）
-  if (to.name === 'LqIndex') {
+  // 首页参数持久化/兜底：tabbar 切换可能导致 /jhhome 不带 query（merchantId 等）
+  if (to.name === 'Jhhome') {
     const hasQuery = to.query && Object.keys(to.query).length > 0
     if (hasQuery) {
       // 进入 home 有参数：保存下来

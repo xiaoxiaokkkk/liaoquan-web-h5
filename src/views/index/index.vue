@@ -267,7 +267,7 @@ watch(activeTab, () => {
   // 列表由 ContentList 内部监听 tabKey 变化后自动刷新
 })
 
-const APP_PROMO_SESSION_KEY = 'lqindex_app_promo_continue_browser'
+const APP_PROMO_SESSION_KEY = 'home_app_promo_continue_browser'
 const showAppPromoDialog = ref(false)
 
 function getDownloadAppFullHref() {
@@ -301,7 +301,7 @@ function tryOpenAppPromoDialog() {
 onMounted(async () => {
   await runUserBlackCheck()
   // 下一宏任务再打开，避免与首屏请求、布局抢同一帧
-  setTimeout(() => tryOpenAppPromoDialog(), 0)
+  // setTimeout(() => tryOpenAppPromoDialog(), 0)
 })
 
 onActivated(async () => {

@@ -103,7 +103,7 @@ function buildPromotionRedirectUrl() {
 
   const baseUrl = import.meta.env.BASE_URL || '/webh5/'
   const normalizedBase = baseUrl === '/' ? '/' : `/${String(baseUrl).replace(/^\/+|\/+$/g, '')}/`
-  const url = new URL(`${normalizedBase}lqindex`, mainOrigin)
+  const url = new URL(`${normalizedBase}jhhome`, mainOrigin)
   if (merchantId) url.searchParams.set('merchantId', merchantId)
   if (userId) url.searchParams.set('userId', userId)
   return url.toString()

@@ -24,7 +24,7 @@ export function buildMainEnterUrl(query, mainOrigin, basePath = DEFAULT_BASE_PAT
   if (!origin) {
     throw new Error('mainOrigin is required')
   }
-  const url = new URL(`${normalizeBasePath(basePath)}lqindex`, origin)
+  const url = new URL(`${normalizeBasePath(basePath)}jhhome`, origin)
   return appendQuery(url, query).toString()
 }
 
@@ -81,7 +81,7 @@ export function buildTicketCallbackUrl({
   if (!ticket) {
     throw new Error('ticket is required')
   }
-  const url = new URL(`${normalizeBasePath(basePath)}auth-callback`, origin)
+  const url = new URL(`${normalizeBasePath(basePath)}sso-callback`, origin)
   url.searchParams.set('ticket', ticket)
   if (redirectPath) {
     url.searchParams.set('redirect', redirectPath)
@@ -113,7 +113,7 @@ export function buildLoggedInExternalCallbackUrl({
   })
 }
 
-export function normalizeInternalRedirectPath(rawRedirect, basePath = DEFAULT_BASE_PATH, fallback = '/lqindex') {
+export function normalizeInternalRedirectPath(rawRedirect, basePath = DEFAULT_BASE_PATH, fallback = '/jhhome') {
   const value = Array.isArray(rawRedirect)
     ? String(rawRedirect[0] || '')
     : String(rawRedirect || '')
@@ -136,7 +136,7 @@ export function normalizeInternalRedirectPath(rawRedirect, basePath = DEFAULT_BA
   return `${normalizedPath}${search ? `?${search}` : ''}${hash ? `#${hash}` : ''}`
 }
 
-export function normalizeInternalRedirectLocation(rawRedirect, basePath = DEFAULT_BASE_PATH, fallback = '/lqindex') {
+export function normalizeInternalRedirectLocation(rawRedirect, basePath = DEFAULT_BASE_PATH, fallback = '/jhhome') {
   const normalized = normalizeInternalRedirectPath(rawRedirect, basePath, fallback)
   const [pathAndSearch, hash = ''] = normalized.split('#')
   const [path = fallback, search = ''] = pathAndSearch.split('?')
